@@ -6,10 +6,12 @@ const Router = express.Router();
 const userRouter = require("./user");
 const productRouter = require("./product");
 const transactionRouter = require("./transaction");
+const promosRoutes = require("./promos");
 
 // menjalankan Router berdasarkan router yang di import
 Router.use("/user", userRouter);
 Router.use("/product", productRouter);
 Router.use("/transaction", transactionRouter);
+Router.use("/promos", promosRoutes);
 
 module.exports = Router;

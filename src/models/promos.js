@@ -1,9 +1,9 @@
 const db = require("../config/db");
 
 
-const getProductsFromServer = () => {
+const getPromosFromServer = () => {
     return new Promise((resolve, reject) => {
-        db.query("SELECT * FROM products")
+        db.query("SELECT * FROM promos")
             .then(result => {
                 const response = {
                     total: result.rowCount,
@@ -20,15 +20,15 @@ const getProductsFromServer = () => {
     });
 };
 
-const getSingleProductFromServer = (id_product) => {
+const getSinglePromosFromServer = (id_promo) => {
     return new Promise((resolve, reject) => {
-        const sqlQuery = "SELECT * FROM products WHERE id_product = $1";
-        db.query(sqlQuery, [id_product])
+        const sqlQuery = "SELECT * FROM promos WHERE id_promo = $1";
+        db.query(sqlQuery, [id_promo])
             .then(result => {
                 if (result.rows.length === 0) {
                     return reject({
                         status: 404,
-                        err: "Product Not Found"
+                        err: "Promos Not Found"
                     })
                 }
                 const response = {
@@ -45,20 +45,20 @@ const getSingleProductFromServer = (id_product) => {
     });
 };
 
-const findProduct = (query) => {
+const findPromos = (query) => {
     return new Promise((resolve, reject) => {
         // asumsikan query berisikan username, order, sort
-        const { product_name, order, sort } = query;
-        let sqlQuery = "SELECT * FROM products WHERE LOWER(product_name) LIKE LOWER('%' || $1 || '%')";
+        const { promo_code, order, sort } = query;
+        let sqlQuery = "SELECT * FROM promos WHERE LOWER(promo_code) LIKE LOWER('%' || $1 || '%')";
         if (order) {
             sqlQuery += " order by " + sort + " " + order;
         }
-        db.query(sqlQuery, [product_name])
+        db.query(sqlQuery, [promo_code])
             .then(result => {
                 if (result.rows.length === 0) {
                     return reject({
                         status: 404,
-                        err: "Product Not Found"
+                        err: "Promo Not Found"
                     });
                 }
                 const response = {
@@ -77,11 +77,11 @@ const findProduct = (query) => {
 
 };
 
-const createNewProduct = (body) => {
+const createNewPromos = (body) => {
     return new Promise((resolve, reject) => {
-        const { product_name, product_price, product_photo, product_description, delivery_info, stock_product, id_category, id_product_size } = body;
-        const sqlQuery = "INSERT INTO products(product_name, product_price, product_photo, product_description, delivery_info, stock_product, id_category, id_product_size) VALUES($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *";
-        db.query(sqlQuery, [product_name, product_price, product_photo, product_description, delivery_info, stock_product, id_category, id_product_size])
+        const { id_product, promo_code, discount, expired_start, expired_end, description_promo } = body;
+        const sqlQuery = "INSERT INTO promos(id_product, promo_code, discount, expired_start, expired_end, description_promo) VALUES($1, $2, $3, $4, $5, $6) RETURNING *";
+        db.query(sqlQuery, [id_product, promo_code, discount, expired_start, expired_end, description_promo])
             .then(({ rows }) => {
                 const response = {
                     data: rows[0],
@@ -97,16 +97,16 @@ const createNewProduct = (body) => {
     });
 };
 
-const deleteProductFromServer = (id_product) => {
+const deletePromosFromServer = (id_promo) => {
     return new Promise((resolve, reject) => {
         // parameterized query
-        const sqlQuery = "DELETE FROM products WHERE id_product = $1 RETURNING *";
-        db.query(sqlQuery, [id_product])
+        const sqlQuery = "DELETE FROM promos WHERE id_promo = $1 RETURNING *";
+        db.query(sqlQuery, [id_promo])
             .then(result => {
                 if (result.rows.length === 0) {
                     return reject({
                         status: 404,
-                        err: "Product Not Found"
+                        err: "Promos Not Found"
                     })
                 }
                 const response = {
@@ -123,17 +123,17 @@ const deleteProductFromServer = (id_product) => {
     });
 };
 
-const updateProductFromServer = (id_product, body) => {
+const updatePromosFromServer = (id_promo, body) => {
     return new Promise((resolve, reject) => {
-        const { product_name, product_price, product_photo, product_description, delivery_info, stock_product, id_category } = body;
+        const { id_product, promo_code, discount, expired_start, expired_end, description_promo } = body;
         const sqlQuery =
-            "UPDATE products SET product_name= COALESCE(NULLIF($1, ''), product_name), product_price= COALESCE(NULLIF($2, '')::money, product_price), product_photo= COALESCE(NULLIF($3, ''), product_photo), product_description= COALESCE(NULLIF($4, ''), product_description), delivery_info= COALESCE(NULLIF($5, ''), delivery_info), stock_product= COALESCE(NULLIF($6, '')::numeric, stock_product),id_category= COALESCE(NULLIF($7, '')::int8, id_category) WHERE id_product=$8 RETURNING *";
-        db.query(sqlQuery, [product_name, product_price, product_photo, product_description, delivery_info, stock_product, id_category, id_product])
+            "UPDATE promos SET id_product= COALESCE(NULLIF($1, '')::int8, id_product), promo_code= COALESCE(NULLIF($2, ''), promo_code), discount= COALESCE(NULLIF($3, '')::numeric, discount), expired_start= COALESCE(NULLIF($4, '')::date, expired_start), expired_end= COALESCE(NULLIF($5, '')::date, expired_end), description_promo= COALESCE(NULLIF($6, ''), description_promo) WHERE id_promo=$7 RETURNING *";
+        db.query(sqlQuery, [id_product, promo_code, discount, expired_start, expired_end, description_promo, id_promo])
             .then((result) => {
                 if (result.rows.length === 0) {
                     return reject({
                         status: 404,
-                        err: "Product Not Found"
+                        err: "Promo Not Found"
                     });
                 };
                 const response = {
@@ -150,10 +150,10 @@ const updateProductFromServer = (id_product, body) => {
     });
 };
 module.exports = {
-    getProductsFromServer,
-    getSingleProductFromServer,
-    findProduct,
-    createNewProduct,
-    deleteProductFromServer,
-    updateProductFromServer
+    getPromosFromServer,
+    getSinglePromosFromServer,
+    findPromos,
+    createNewPromos,
+    deletePromosFromServer,
+    updatePromosFromServer
 }

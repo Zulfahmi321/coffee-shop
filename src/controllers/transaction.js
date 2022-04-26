@@ -1,5 +1,5 @@
 const transactionModel = require("../models/transaction");
-const { createNewTransaction, getTransactionFromServer } = transactionModel;
+const { createNewTransaction, getTransactionFromServer, getSingleTransactionsFromServer, deleteTransactionFromServer } = transactionModel;
 
 const postNewTransaction = (req, res) => {
     createNewTransaction(req.body)
@@ -36,7 +36,44 @@ const getAllTransaction = (_, res) => {
         });
 };
 
+const getTransactionById = (req, res) => {
+    const id = req.params.id;
+    getSingleTransactionsFromServer(id)
+        .then((data) => {
+            res.status(200).json({
+                data,
+                err: null
+            });
+        })
+        .catch((error) => {
+            const { err, status } = error;
+            res.status(status).json({
+                data: [],
+                err
+            });
+        });
+};
+
+const deleteTransactionById = (req, res) => {
+    const product_name = req.params.product_name;
+    deleteTransactionFromServer(product_name)
+        .then((data) => {
+            res.status(200).json({
+                data,
+                err: null
+            });
+        })
+        .catch((error) => {
+            const { err, status } = error;
+            res.status(status).json({
+                data: [],
+                err
+            });
+        });
+}
 module.exports = {
     postNewTransaction,
-    getAllTransaction
+    getAllTransaction,
+    getTransactionById,
+    deleteTransactionById
 };
