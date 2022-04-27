@@ -7,7 +7,7 @@ validate.queryFind = (req, res, next) => {
     // query harus ada 3
     if (validQuery.length < 3) {
         return res.status(400).json({
-            err: "Body harus diisikan secara lengkap"
+            err: "Query harus diisikan secara lengkap"
         });
     }
     // mau cek tipe data
