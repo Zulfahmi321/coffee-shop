@@ -3,10 +3,10 @@ const db = require("../config/db");
 
 const getProductsFromServer = (query) => {
     return new Promise((resolve, reject) => {
-        const { category_name, order, sort, transaction } = query;
+        const { category_name, order, sort } = query;
         let sqlQuery = "SELECT * FROM products";
         if (category_name) {
-            sqlQuery += " JOIN category_products ON products.id_category = category_products.id_category WHERE category_products.category_name = '" + category_name + "'";
+            sqlQuery += " JOIN category_products ON products.id_category = category_products.id_category WHERE category_products.category_name = LOWER('" + category_name + "')";
         }
         if (sort) {
             sqlQuery += " order by " + sort + " " + order

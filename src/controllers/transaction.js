@@ -1,5 +1,5 @@
 const transactionModel = require("../models/transaction");
-const { createNewTransaction, getTransactionFromServer, getSingleTransactionsFromServer, deleteTransactionFromServer } = transactionModel;
+const { createNewTransaction, findTransactionUser, getTransactionFromServer, getSingleTransactionsFromServer, deleteTransactionFromServer } = transactionModel;
 
 const postNewTransaction = (req, res) => {
     createNewTransaction(req.body)
@@ -29,6 +29,23 @@ const getAllTransaction = (_, res) => {
         })
         .catch((error) => {
             const { err, status } = error;
+            res.status(status).json({
+                data: [],
+                err,
+            });
+        });
+};
+
+const findTransactionUserById = (req, res) => {
+    findTransactionUser(req.query)
+        .then(({ data, total }) => {
+            res.status(200).json({
+                err: null,
+                data,
+                total,
+            });
+        })
+        .catch(({ status, err }) => {
             res.status(status).json({
                 data: [],
                 err,
@@ -75,5 +92,6 @@ module.exports = {
     postNewTransaction,
     getAllTransaction,
     getTransactionById,
-    deleteTransactionById
+    deleteTransactionById,
+    findTransactionUserById
 };

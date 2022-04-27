@@ -3,7 +3,7 @@ const Router = express.Router();
 
 //import controllernya
 const productController = require("../controllers/product");
-// const validate = require("../middlewares/validate");
+const validate = require("../middlewares/validate");
 
 Router.get("/all", productController.getAllProducts);
 
@@ -13,7 +13,7 @@ Router.get("/:id", productController.getProductById);
 
 Router.get("/", productController.findProductByQuery);
 
-Router.post("/", productController.postNewProduct);
+Router.post("/", validate.productData, productController.postNewProduct);
 
 Router.put("/:id", productController.updateProduct);
 

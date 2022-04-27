@@ -7,7 +7,6 @@ const getUsersFromServer = () => {
                 const response = {
                     total: result.rowCount,
                     data: result.rows
-
                 }
                 resolve(response);
             })

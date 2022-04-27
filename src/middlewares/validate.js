@@ -35,4 +35,31 @@ validate.userData = (req, res, next) => {
     next()
 };
 
+// validasi productdata 
+validate.productData = (req, res, next) => {
+    // cek apakah body sesuai dengan yang diinginkan
+    const { body } = req;
+    const validBody = Object.keys(body).filter((key) => key === "product_name" || key === "product_price" || key === "product_photo" || key === "product_description" || key === "delivery_info" || key === "stock_product" || key === "id_category" || key === "id_product_size");
+    // body harus ada 10
+    if (validBody.length < 8) {
+        return res.status(400).json({
+            err: "Body harus diisikan secara lengkap"
+        });
+    }
+    next()
+};
+
+// validasi promosdata 
+validate.promosData = (req, res, next) => {
+    // cek apakah body sesuai dengan yang diinginkan
+    const { body } = req;
+    const validBody = Object.keys(body).filter((key) => key === "id_product" || key === "promo_code" || key === "discount" || key === "expired_start" || key === "expired_end" || key === "description_promo");
+    if (validBody.length < 6) {
+        return res.status(400).json({
+            err: "Body harus diisikan secara lengkap"
+        });
+    }
+    next()
+};
+
 module.exports = validate;
