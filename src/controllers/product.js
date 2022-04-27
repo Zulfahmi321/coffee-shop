@@ -1,8 +1,27 @@
 const productModel = require("../models/product");
-const { getProductsFromServer, getSingleProductFromServer, findProduct, createNewProduct, deleteProductFromServer, updateProductFromServer } = productModel
+const { getProductsFromServer, getSingleProductFromServer, findProduct, createNewProduct, deleteProductFromServer, updateProductFromServer, getBestSellingProducts } = productModel
 
-const getAllProducts = (_, res) => {
-    getProductsFromServer()
+const getAllProducts = (req, res) => {
+    getProductsFromServer(req.query)
+        .then((result) => {
+            const { total, data } = result;
+            res.status(200).json({
+                data,
+                total,
+                err: null
+            });
+        })
+        .catch((error) => {
+            const { err, status } = error;
+            res.status(status).json({
+                data: [],
+                err,
+            });
+        });
+};
+
+const getBestProducts = (_, res) => {
+    getBestSellingProducts()
         .then((result) => {
             const { total, data } = result;
             res.status(200).json({
@@ -115,5 +134,6 @@ module.exports = {
     findProductByQuery,
     postNewProduct,
     deleteProductById,
-    updateProduct
+    updateProduct,
+    getBestProducts
 };

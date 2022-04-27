@@ -1,9 +1,37 @@
 const db = require("../config/db");
 
 
-const getProductsFromServer = () => {
+const getProductsFromServer = (query) => {
     return new Promise((resolve, reject) => {
-        db.query("SELECT * FROM products")
+        const { category_name, order, sort, transaction } = query;
+        let sqlQuery = "SELECT * FROM products";
+        if (category_name) {
+            sqlQuery += " JOIN category_products ON products.id_category = category_products.id_category WHERE category_products.category_name = '" + category_name + "'";
+        }
+        if (sort) {
+            sqlQuery += " order by " + sort + " " + order
+        }
+        db.query(sqlQuery)
+            .then(result => {
+                const response = {
+                    total: result.rowCount,
+                    data: result.rows
+                }
+                resolve(response);
+            })
+            .catch(err => {
+                reject({
+                    status: 500,
+                    err
+                });
+            });
+    });
+};
+
+const getBestSellingProducts = () => {
+    return new Promise((resolve, reject) => {
+        let sqlQuery = "SELECT product_name, product_price, product_photo, product_description, delivery_info, stock_product, SUM(item_total) AS total_purchases FROM transactions JOIN products ON transactions.id_product = products.id_product GROUP BY products.id_product ORDER BY total_purchases DESC";
+        db.query(sqlQuery)
             .then(result => {
                 const response = {
                     total: result.rowCount,
@@ -155,5 +183,6 @@ module.exports = {
     findProduct,
     createNewProduct,
     deleteProductFromServer,
-    updateProductFromServer
+    updateProductFromServer,
+    getBestSellingProducts
 }

@@ -7,6 +7,8 @@ Router.get("/all", transactionController.getAllTransaction);
 
 Router.get("/:id", transactionController.getTransactionById);
 
-Router.delete("/:product_name", transactionController.deleteTransactionById);
+Router.post("/", transactionController.postNewTransaction);
+
+Router.delete("/:id_transaction", transactionController.deleteTransactionById);
 
 module.exports = Router;
