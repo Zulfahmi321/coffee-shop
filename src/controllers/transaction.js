@@ -71,27 +71,9 @@ const getTransactionById = (req, res) => {
         });
 };
 
-const deleteTransactionById = (req, res) => {
-    const product_name = req.params.product_name;
-    deleteTransactionFromServer(product_name)
-        .then((data) => {
-            res.status(200).json({
-                data,
-                err: null
-            });
-        })
-        .catch((error) => {
-            const { err, status } = error;
-            res.status(status).json({
-                data: [],
-                err
-            });
-        });
-}
 module.exports = {
     postNewTransaction,
     getAllTransaction,
     getTransactionById,
-    deleteTransactionById,
     findTransactionUserById
 };

@@ -7,7 +7,7 @@ const getTransactionFromServer = () => {
                 const response = {
                     total: result.rowCount,
                     data: result.rows
-                }
+                };
                 resolve(response);
             })
             .catch(err => {
@@ -34,7 +34,7 @@ const findTransactionUser = (query) => {
                 const response = {
                     total: result.rowCount,
                     data: result.rows
-                }
+                };
                 resolve(response);
             })
             .catch((err) => {
@@ -56,12 +56,12 @@ const getSingleTransactionsFromServer = (id_transaction) => {
                     return reject({
                         status: 404,
                         err: "Data Transaction Not Found"
-                    })
+                    });
                 }
                 const response = {
                     data: result.rows
                 };
-                resolve(response)
+                resolve(response);
             })
             .catch(error => {
                 reject({
@@ -74,13 +74,13 @@ const getSingleTransactionsFromServer = (id_transaction) => {
 
 const createNewTransaction = (body) => {
     return new Promise((resolve, reject) => {
-        const { id_user, id_product, item_total, transaction_date, address_details, id_product_size, range, id_payment_method, id_delivery_method, id_promo } = body
+        const { id_user, id_product, item_total, transaction_date, address_details, id_product_size, range, id_payment_method, id_delivery_method, id_promo } = body;
         const sqlQuery = "INSERT INTO transactions(id_user, id_product, item_total, transaction_date, address_details, id_product_size, range,id_payment_method, id_delivery_method, id_promo) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9,$10) RETURNING *";
         db.query(sqlQuery, [id_user, id_product, item_total, transaction_date, address_details, id_product_size, range, id_payment_method, id_delivery_method, id_promo])
             .then(({ rows }) => {
                 const response = {
                     data: rows[0]
-                }
+                };
                 resolve(response);
             })
             .catch((error) => {
@@ -97,4 +97,4 @@ module.exports = {
     getTransactionFromServer,
     getSingleTransactionsFromServer,
     findTransactionUser
-}
+};
