@@ -2,7 +2,7 @@ const db = require("../config/db");
 
 const getTransactionFromServer = () => {
     return new Promise((resolve, reject) => {
-        db.query("SELECT users.username, products.product_name, products.product_price,promos.promo_code, product_sizes.product_size_name , item_total ,(product_price * item_total / 100)*5 as tax, (product_price*discount)/100 as discount, range, range*5000::money as shipping, (product_price * item_total) - (product_price*discount)/100 + (product_price * item_total / 100)*5 + range*5000::money as subtotal, payment_methods.payment_method_name, delivery_methods.name_delivery_method ,transaction_date, address_details  FROM transactions JOIN users ON transactions.id_user = users.id_user JOIN product_sizes ON transactions.id_product_size = product_sizes.id_product_size JOIN products ON transactions.id_product = products.id_product JOIN payment_methods ON transactions.id_payment_method = payment_methods.id_payment_method JOIN delivery_methods ON transactions.id_delivery_method  = delivery_methods.id_delivery_method JOIN promos ON transactions.id_promo = promos.id_promo ")
+        db.query("SELECT users.username, products.product_name, products.product_price,promos.promo_code, product_sizes.product_size_name , item_total ,(product_price * item_total / 100)*5 as tax, (product_price*discount)/100 as discount, range, range*5000::money as shipping, (product_price * item_total) - (product_price*discount)/100 + (product_price * item_total / 100)*5 + range*5000::money as subtotal, payment_methods.payment_method_name, delivery_methods.name_delivery_method ,transaction_date, address_details  FROM transactions JOIN users ON transactions.id_user = users.id_user JOIN product_sizes ON transactions.id_product_size = product_sizes.id_product_size JOIN products ON transactions.id_product = products.id_product JOIN payment_methods ON transactions.id_payment_method = payment_methods.id_payment_method JOIN delivery_methods ON transactions.id_delivery_method  = delivery_methods.id_delivery_method JOIN promos ON transactions.id_promo = promos.id_promo")
             .then(result => {
                 const response = {
                     total: result.rowCount,
@@ -22,7 +22,7 @@ const getTransactionFromServer = () => {
 const findTransactionUser = (query) => {
     return new Promise((resolve, reject) => {
         const { id_user } = query;
-        let sqlQuery = "SELECT users.username, products.product_name, products.product_price,promos.promo_code, product_sizes.product_size_name , item_total ,(product_price * item_total / 100)*5 as tax, (product_price*discount)/100 as discount, range, range*5000::money as shipping, (product_price * item_total) - (product_price*discount)/100 + (product_price * item_total / 100)*5 + range*5000::money as subtotal, payment_methods.payment_method_name, delivery_methods.name_delivery_method ,transaction_date, address_details FROM transactions JOIN users ON transactions.id_user = users.id_user JOIN product_sizes ON transactions.id_product_size = product_sizes.id_product_size JOIN products ON transactions.id_product = products.id_product JOIN payment_methods ON transactions.id_payment_method = payment_methods.id_payment_method JOIN delivery_methods ON transactions.id_delivery_method  = delivery_methods.id_delivery_method JOIN promos ON transactions.id_promo = promos.id_promo WHERE users.id_user =$1";
+        let sqlQuery = "SELECT users.username, products.product_name, products.product_price,promos.promo_code, product_sizes.product_size_name , item_total ,(product_price * item_total / 100)*5 as tax, (product_price*discount)/100 as discount, range, range*5000::money as shipping, (product_price * item_total) - (product_price*discount)/100 + (product_price * item_total / 100)*5 + range*5000::money as subtotal, payment_methods.payment_method_name, delivery_methods.name_delivery_method ,transaction_date, address_details  FROM transactions JOIN users ON transactions.id_user = users.id_user JOIN product_sizes ON transactions.id_product_size = product_sizes.id_product_size JOIN products ON transactions.id_product = products.id_product JOIN payment_methods ON transactions.id_payment_method = payment_methods.id_payment_method JOIN delivery_methods ON transactions.id_delivery_method  = delivery_methods.id_delivery_method JOIN promos ON transactions.id_promo = promos.id_promo WHERE users.id_user =$1";
         db.query(sqlQuery, [id_user])
             .then(result => {
                 if (result.rows.length === 0) {
@@ -49,7 +49,7 @@ const findTransactionUser = (query) => {
 
 const getSingleTransactionsFromServer = (id_transaction) => {
     return new Promise((resolve, reject) => {
-        const sqlQuery = "SELECT users.username, products.product_name, products.product_price,promos.promo_code, product_sizes.product_size_name , item_total ,(product_price * item_total / 100)*5 as tax, (product_price*discount)/100 as discount, range, range*5000::money as shipping, (product_price * item_total) - (product_price*discount)/100 + (product_price * item_total / 100)*5 + range*5000::money as subtotal, payment_methods.payment_method_name, delivery_methods.name_delivery_method ,transaction_date, address_details FROM transactions JOIN users ON transactions.id_user = users.id_user JOIN product_sizes ON transactions.id_product_size = product_sizes.id_product_size JOIN products ON transactions.id_product = products.id_product JOIN payment_methods ON transactions.id_payment_method = payment_methods.id_payment_method JOIN delivery_methods ON transactions.id_delivery_method  = delivery_methods.id_delivery_method JOIN promos ON transactions.id_promo = promos.id_promo WHERE id_transaction = $1";
+        const sqlQuery = "SELECT users.username, products.product_name, products.product_price,promos.promo_code, product_sizes.product_size_name , item_total ,product_price * item_total as subtotal, (product_price * item_total / 100)*5 as tax, (product_price*discount)/100 as discount, range, range*5000 as shipping, payment_methods.payment_method_name, delivery_methods.name_delivery_method ,transaction_date, address_details FROM transactions JOIN users ON transactions.id_user = users.id_user JOIN product_sizes ON transactions.id_product_size = product_sizes.id_product_size JOIN products ON transactions.id_product = products.id_product JOIN payment_methods ON transactions.id_payment_method = payment_methods.id_payment_method JOIN delivery_methods ON transactions.id_delivery_method  = delivery_methods.id_delivery_method JOIN promos ON transactions.id_promo = promos.id_promo WHERE id_transaction = $1";
         db.query(sqlQuery, [id_transaction])
             .then(result => {
                 if (result.rows.length === 0) {
@@ -68,32 +68,6 @@ const getSingleTransactionsFromServer = (id_transaction) => {
                     status: 500,
                     error
                 });
-            });
-    });
-};
-
-const deleteTransactionFromServer = (id_transaction) => {
-    return new Promise((resolve, reject) => {
-        // parameterized query
-        const sqlQuery = "DELETE FROM transactions WHERE id_transaction = $1 RETURNING *";
-        db.query(sqlQuery, [id_transaction])
-            .then(result => {
-                if (result.rows.length === 0) {
-                    return reject({
-                        status: 404,
-                        err: "Transaction Not Found"
-                    })
-                }
-                const response = {
-                    data: result.rows[0]
-                };
-                resolve(response)
-            })
-            .catch(error => {
-                reject({
-                    status: 500,
-                    error
-                })
             });
     });
 };
@@ -122,6 +96,5 @@ module.exports = {
     createNewTransaction,
     getTransactionFromServer,
     getSingleTransactionsFromServer,
-    deleteTransactionFromServer,
     findTransactionUser
 }

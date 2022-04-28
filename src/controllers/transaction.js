@@ -1,5 +1,5 @@
 const transactionModel = require("../models/transaction");
-const { createNewTransaction, findTransactionUser, getTransactionFromServer, getSingleTransactionsFromServer, deleteTransactionFromServer } = transactionModel;
+const { createNewTransaction, findTransactionUser, getTransactionFromServer, getSingleTransactionsFromServer } = transactionModel;
 
 const postNewTransaction = (req, res) => {
     createNewTransaction(req.body)

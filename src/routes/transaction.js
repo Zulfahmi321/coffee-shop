@@ -11,6 +11,4 @@ Router.post("/", transactionController.postNewTransaction);
 
 Router.get("/", transactionController.findTransactionUserById);
 
-Router.delete("/:id_transaction", transactionController.deleteTransactionById);
-
 module.exports = Router;
