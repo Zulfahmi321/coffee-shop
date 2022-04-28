@@ -1,5 +1,5 @@
 const productModel = require("../models/product");
-const { getProductsFromServer, getSingleProductFromServer, findProduct, createNewProduct, deleteProductFromServer, updateProductFromServer, getBestSellingProducts } = productModel
+const { getProductsFromServer, getSingleProductFromServer, findProduct, createNewProduct, deleteProductFromServer, updateProductFromServer, getBestSellingProducts } = productModel;
 
 const getAllProducts = (req, res) => {
     getProductsFromServer(req.query)
@@ -54,7 +54,7 @@ const getProductById = (req, res) => {
                 data: [],
                 err
             });
-        })
+        });
 };
 
 const findProductByQuery = (req, res) => {
@@ -64,14 +64,14 @@ const findProductByQuery = (req, res) => {
                 err: null,
                 data,
                 total
-            })
+            });
         })
         .catch(({ status, err }) => {
             res.status(status).json({
                 data: [],
                 err
             });
-        })
+        });
 };
 
 const postNewProduct = (req, res) => {
@@ -124,7 +124,7 @@ const updateProduct = (req, res) => {
             res.status(status).json({
                 data: [],
                 err
-            })
+            });
         });
 };
 
