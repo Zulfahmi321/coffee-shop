@@ -24,7 +24,7 @@ const getAllTransaction = (_, res) => {
             res.status(200).json({
                 data,
                 total,
-                err: null,
+                err: null
             });
         })
         .catch((error) => {
