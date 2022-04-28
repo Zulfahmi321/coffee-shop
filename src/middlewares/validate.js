@@ -39,8 +39,7 @@ validate.userData = (req, res, next) => {
 validate.productData = (req, res, next) => {
     // cek apakah body sesuai dengan yang diinginkan
     const { body } = req;
-    const validBody = Object.keys(body).filter((key) => key === "product_name" || key === "product_price" || key === "product_photo" || key === "product_description" || key === "delivery_info" || key === "stock_product" || key === "id_category" || key === "id_product_size");
-    // body harus ada 10
+    const validBody = Object.keys(body).filter((key) => key === "product_name" || key === "product_price" || key === "product_photo" || key === "product_description" || key === "delivery_info" || key === "stock_product" || key === "id_category" || key === "product_add");
     if (validBody.length < 8) {
         return res.status(400).json({
             err: "Body harus diisikan secara lengkap"

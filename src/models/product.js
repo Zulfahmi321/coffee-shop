@@ -107,9 +107,9 @@ const findProduct = (query) => {
 
 const createNewProduct = (body) => {
     return new Promise((resolve, reject) => {
-        const { product_name, product_price, product_photo, product_description, delivery_info, stock_product, id_category, id_product_size } = body;
-        const sqlQuery = "INSERT INTO products(product_name, product_price, product_photo, product_description, delivery_info, stock_product, id_category, id_product_size) VALUES($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *";
-        db.query(sqlQuery, [product_name, product_price, product_photo, product_description, delivery_info, stock_product, id_category, id_product_size])
+        const { product_name, product_price, product_photo, product_description, delivery_info, stock_product, id_category, product_add } = body;
+        const sqlQuery = "INSERT INTO products(product_name, product_price, product_photo, product_description, delivery_info, stock_product, id_category, product_add) VALUES($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *";
+        db.query(sqlQuery, [product_name, product_price, product_photo, product_description, delivery_info, stock_product, id_category, product_add])
             .then(({ rows }) => {
                 const response = {
                     data: rows[0],
