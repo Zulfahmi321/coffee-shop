@@ -1,8 +1,9 @@
 const db = require("../config/db");
+const { v4: uuidV4 } = require("uuid");
 
 const getTransactionFromServer = () => {
     return new Promise((resolve, reject) => {
-        db.query("SELECT users.username, products.product_name, products.product_price,promos.promo_code, product_sizes.product_size_name , item_total ,(product_price * item_total / 100)*5 as tax, (product_price*discount)/100 as discount, range, range*5000::money as shipping, (product_price * item_total) - (product_price*discount)/100 + (product_price * item_total / 100)*5 + range*5000::money as subtotal, payment_methods.payment_method_name, delivery_methods.name_delivery_method ,transaction_date, address_details  FROM transactions JOIN users ON transactions.id_user = users.id_user JOIN product_sizes ON transactions.id_product_size = product_sizes.id_product_size JOIN products ON transactions.id_product = products.id_product JOIN payment_methods ON transactions.id_payment_method = payment_methods.id_payment_method JOIN delivery_methods ON transactions.id_delivery_method  = delivery_methods.id_delivery_method JOIN promos ON transactions.id_promo = promos.id_promo")
+        db.query("SELECT users.username, products.name, products.price, sizes.name, quantity ,(price * quantity / 100) * 5 as tax, (price * quantity) + (price * quantity / 100) * 5 as subtotal, payments.name, deliverys.name, date, users.address  FROM transactions JOIN users ON transactions.user_id = users.id JOIN sizes ON transactions.size_id = sizes.id JOIN products ON transactions.product_id = products.id JOIN payments ON transactions.payment_id = payments.id JOIN deliverys ON transactions.delivery_id = deliverys.id")
             .then(result => {
                 const response = {
                     total: result.rowCount,
@@ -22,7 +23,7 @@ const getTransactionFromServer = () => {
 const findTransactionUser = (query) => {
     return new Promise((resolve, reject) => {
         const { id_user } = query;
-        let sqlQuery = "SELECT users.username, products.product_name, products.product_price,promos.promo_code, product_sizes.product_size_name , item_total ,(product_price * item_total / 100)*5 as tax, (product_price*discount)/100 as discount, range, range*5000::money as shipping, (product_price * item_total) - (product_price*discount)/100 + (product_price * item_total / 100)*5 + range*5000::money as subtotal, payment_methods.payment_method_name, delivery_methods.name_delivery_method ,transaction_date, address_details  FROM transactions JOIN users ON transactions.id_user = users.id_user JOIN product_sizes ON transactions.id_product_size = product_sizes.id_product_size JOIN products ON transactions.id_product = products.id_product JOIN payment_methods ON transactions.id_payment_method = payment_methods.id_payment_method JOIN delivery_methods ON transactions.id_delivery_method  = delivery_methods.id_delivery_method JOIN promos ON transactions.id_promo = promos.id_promo WHERE users.id_user =$1";
+        let sqlQuery = "SELECT  users.username, products.name, products.price, sizes.name, quantity ,(price * quantity / 100) * 5 as tax, (price * quantity) + (price * quantity / 100) * 5 as subtotal, payments.name, deliverys.name, date, users.address  FROM transactions JOIN users ON transactions.user_id = users.id JOIN sizes ON transactions.size_id = sizes.id JOIN products ON transactions.product_id = products.id JOIN payments ON transactions.payment_id = payments.id JOIN deliverys ON transactions.delivery_id = deliverys.id WHERE users.id =$1";
         db.query(sqlQuery, [id_user])
             .then(result => {
                 if (result.rows.length === 0) {
@@ -49,7 +50,7 @@ const findTransactionUser = (query) => {
 
 const getSingleTransactionsFromServer = (id_transaction) => {
     return new Promise((resolve, reject) => {
-        const sqlQuery = "SELECT users.username, products.product_name, products.product_price,promos.promo_code, product_sizes.product_size_name , item_total ,product_price * item_total as subtotal, (product_price * item_total / 100)*5 as tax, (product_price*discount)/100 as discount, range, range*5000 as shipping, payment_methods.payment_method_name, delivery_methods.name_delivery_method ,transaction_date, address_details FROM transactions JOIN users ON transactions.id_user = users.id_user JOIN product_sizes ON transactions.id_product_size = product_sizes.id_product_size JOIN products ON transactions.id_product = products.id_product JOIN payment_methods ON transactions.id_payment_method = payment_methods.id_payment_method JOIN delivery_methods ON transactions.id_delivery_method  = delivery_methods.id_delivery_method JOIN promos ON transactions.id_promo = promos.id_promo WHERE id_transaction = $1";
+        const sqlQuery = "SELECT users.username, products.name, products.price, sizes.name, quantity ,(price * quantity / 100) * 5 as tax, (price * quantity) + (price * quantity / 100) * 5 as subtotal, payments.name, deliverys.name, date, users.address  FROM transactions JOIN users ON transactions.user_id = users.id JOIN sizes ON transactions.size_id = sizes.id JOIN products ON transactions.product_id = products.id JOIN payments ON transactions.payment_id = payments.id JOIN deliverys ON transactions.delivery_id = deliverys.id WHERE transactions.id = $1";
         db.query(sqlQuery, [id_transaction])
             .then(result => {
                 if (result.rows.length === 0) {
@@ -74,9 +75,11 @@ const getSingleTransactionsFromServer = (id_transaction) => {
 
 const createNewTransaction = (body) => {
     return new Promise((resolve, reject) => {
-        const { id_user, id_product, item_total, transaction_date, address_details, id_product_size, range, id_payment_method, id_delivery_method, id_promo } = body;
-        const sqlQuery = "INSERT INTO transactions(id_user, id_product, item_total, transaction_date, address_details, id_product_size, range,id_payment_method, id_delivery_method, id_promo) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9,$10) RETURNING *";
-        db.query(sqlQuery, [id_user, id_product, item_total, transaction_date, address_details, id_product_size, range, id_payment_method, id_delivery_method, id_promo])
+        const { user_id, product_id, quantity, size_id, payment_id, delivery_id, promo_id } = body;
+        const sqlQuery = "INSERT INTO transactions(id, user_id, product_id, quantity, date, size_id, payment_id, delivery_id, promo_id) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *";
+        const date = new Date(Date.now());
+        const id = uuidV4();
+        db.query(sqlQuery, [id, user_id, product_id, quantity, date, size_id, payment_id, delivery_id, promo_id])
             .then(({ rows }) => {
                 const response = {
                     data: rows[0]

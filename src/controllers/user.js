@@ -1,5 +1,7 @@
 const userModel = require("../models/user");
-const { getUsersFromServer, getSingleUserFromServer, findUser, createNewUser, deleteUserFromServer, updateUserFromServer } = userModel
+const { getUsersFromServer, getSingleUserFromServer, findUser, createNewUser, deleteUserFromServer, updateUserFromServer } = userModel;
+
+const { successResponse, errorResponse } = require("../helper/response");
 
 const getAllUsers = (_, res) => {
     getUsersFromServer()
@@ -107,22 +109,14 @@ const deleteUserById = (req, res) => {
 };
 
 const updateUser = (req, res) => {
-    const id = req.params.id;
-    updateUserFromServer(id, req.body)
+    const id = req.userPayload.id;
+    const { file = null } = req;
+    updateUserFromServer(id, file, req.body)
         .then((result) => {
-            const { total, data } = result;
-            res.status(200).json({
-                data,
-                total,
-                err: null
-            });
+            successResponse(res, 200, result.data, null);
         })
         .catch((error) => {
-            const { err, status } = error;
-            res.status(status).json({
-                data: [],
-                err
-            })
+            errorResponse(res, 500, error);
         });
 };
 

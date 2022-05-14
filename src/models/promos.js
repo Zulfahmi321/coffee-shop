@@ -1,4 +1,5 @@
 const db = require("../config/db");
+const { v4: uuidV4 } = require("uuid");
 
 
 const getPromosFromServer = () => {
@@ -8,7 +9,7 @@ const getPromosFromServer = () => {
                 const response = {
                     total: result.rowCount,
                     data: result.rows
-                }
+                };
                 resolve(response);
             })
             .catch(err => {
@@ -22,25 +23,25 @@ const getPromosFromServer = () => {
 
 const getSinglePromosFromServer = (id_promo) => {
     return new Promise((resolve, reject) => {
-        const sqlQuery = "SELECT * FROM promos WHERE id_promo = $1";
+        const sqlQuery = "SELECT * FROM promos WHERE id= $1";
         db.query(sqlQuery, [id_promo])
             .then(result => {
                 if (result.rows.length === 0) {
                     return reject({
                         status: 404,
                         err: "Promos Not Found"
-                    })
+                    });
                 }
                 const response = {
                     data: result.rows
                 };
-                resolve(response)
+                resolve(response);
             })
             .catch(error => {
                 reject({
                     status: 500,
                     error
-                })
+                });
             });
     });
 };
@@ -48,12 +49,12 @@ const getSinglePromosFromServer = (id_promo) => {
 const findPromos = (query) => {
     return new Promise((resolve, reject) => {
         // asumsikan query berisikan username, order, sort
-        const { promo_code, order, sort } = query;
-        let sqlQuery = "SELECT * FROM promos WHERE LOWER(promo_code) LIKE LOWER('%' || $1 || '%')";
+        const { code, order, sort } = query;
+        let sqlQuery = "SELECT * FROM promos WHERE LOWER(code) LIKE LOWER('%' || $1 || '%')";
         if (order) {
             sqlQuery += " order by " + sort + " " + order;
         }
-        db.query(sqlQuery, [promo_code])
+        db.query(sqlQuery, [code])
             .then(result => {
                 if (result.rows.length === 0) {
                     return reject({
@@ -64,7 +65,7 @@ const findPromos = (query) => {
                 const response = {
                     total: result.rowCount,
                     data: result.rows
-                }
+                };
                 resolve(response);
             })
             .catch((err) => {
@@ -79,13 +80,17 @@ const findPromos = (query) => {
 
 const createNewPromos = (body) => {
     return new Promise((resolve, reject) => {
-        const { id_product, promo_code, discount, expired_start, expired_end, description_promo } = body;
-        const sqlQuery = "INSERT INTO promos(id_product, promo_code, discount, expired_start, expired_end, description_promo) VALUES($1, $2, $3, $4, $5, $6) RETURNING *";
-        db.query(sqlQuery, [id_product, promo_code, discount, expired_start, expired_end, description_promo])
+        const { product_id, code, discount, description } = body;
+        const sqlQuery = "INSERT INTO promos(id, product_id, code, discount, expired_start, expired_end, description) VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING *";
+        const expired_start = new Date(Date.now());
+        const expired_end = new Date();
+        expired_end.setDate(expired_end.getDate() + 6);
+        const id = uuidV4();
+        db.query(sqlQuery, [id, product_id, code, discount, expired_start, expired_end, description])
             .then(({ rows }) => {
                 const response = {
                     data: rows[0],
-                }
+                };
                 resolve(response);
             })
             .catch((error) => {
@@ -100,46 +105,46 @@ const createNewPromos = (body) => {
 const deletePromosFromServer = (id_promo) => {
     return new Promise((resolve, reject) => {
         // parameterized query
-        const sqlQuery = "DELETE FROM promos WHERE id_promo = $1 RETURNING *";
+        const sqlQuery = "DELETE FROM promos WHERE id = $1 RETURNING *";
         db.query(sqlQuery, [id_promo])
             .then(result => {
                 if (result.rows.length === 0) {
                     return reject({
                         status: 404,
                         err: "Promos Not Found"
-                    })
+                    });
                 }
                 const response = {
                     data: result.rows[0]
                 };
-                resolve(response)
+                resolve(response);
             })
             .catch(error => {
                 reject({
                     status: 500,
                     error
-                })
+                });
             });
     });
 };
 
 const updatePromosFromServer = (id_promo, body) => {
     return new Promise((resolve, reject) => {
-        const { id_product, promo_code, discount, expired_start, expired_end, description_promo } = body;
+        const { product_id_, code, discount, expired_start, expired_end, description } = body;
         const sqlQuery =
-            "UPDATE promos SET id_product= COALESCE(NULLIF($1, '')::int8, id_product), promo_code= COALESCE(NULLIF($2, ''), promo_code), discount= COALESCE(NULLIF($3, '')::numeric, discount), expired_start= COALESCE(NULLIF($4, '')::date, expired_start), expired_end= COALESCE(NULLIF($5, '')::date, expired_end), description_promo= COALESCE(NULLIF($6, ''), description_promo) WHERE id_promo=$7 RETURNING *";
-        db.query(sqlQuery, [id_product, promo_code, discount, expired_start, expired_end, description_promo, id_promo])
+            "UPDATE promos SET product_id= COALESCE(NULLIF($1, '')::int8, product_id), code= COALESCE(NULLIF($2, ''), code), discount= COALESCE(NULLIF($3, '')::numeric, discount), expired_start= COALESCE(NULLIF($4, '')::date, expired_start), expired_end= COALESCE(NULLIF($5, '')::date, expired_end), description= COALESCE(NULLIF($6, ''), description) WHERE id=$7 RETURNING *";
+        db.query(sqlQuery, [product_id_, code, discount, expired_start, expired_end, description, id_promo])
             .then((result) => {
                 if (result.rows.length === 0) {
                     return reject({
                         status: 404,
                         err: "Promo Not Found"
                     });
-                };
+                }
                 const response = {
                     data: result.rows[0]
                 };
-                resolve(response)
+                resolve(response);
             })
             .catch((error) => {
                 reject({
@@ -156,4 +161,4 @@ module.exports = {
     createNewPromos,
     deletePromosFromServer,
     updatePromosFromServer
-}
+};

@@ -2,7 +2,7 @@ const express = require("express");
 const Router = express.Router();
 
 const promosController = require("../controllers/promos");
-const validate = require("../middlewares/validate");
+const { bodyPostPromo } = require("../middlewares/fieldsValidator");
 
 Router.get("/all", promosController.getAllPromos);
 
@@ -10,9 +10,9 @@ Router.get("/:id", promosController.getPromosById);
 
 Router.get("/", promosController.findPromosByQuery);
 
-Router.post("/", validate.promosData, promosController.postNewPromos);
+Router.post("/", bodyPostPromo, promosController.postNewPromos);
 
-Router.put("/:id", promosController.updatePromos);
+Router.patch("/:id", promosController.updatePromos);
 
 Router.delete("/:id", promosController.deleteProductById);
 

@@ -35,7 +35,7 @@ const getPromosById = (req, res) => {
                 data: [],
                 err
             });
-        })
+        });
 };
 
 const findPromosByQuery = (req, res) => {
@@ -45,14 +45,14 @@ const findPromosByQuery = (req, res) => {
                 err: null,
                 data,
                 total
-            })
+            });
         })
         .catch(({ status, err }) => {
             res.status(status).json({
                 data: [],
                 err
             });
-        })
+        });
 };
 
 const postNewPromos = (req, res) => {
@@ -105,7 +105,7 @@ const updatePromos = (req, res) => {
             res.status(status).json({
                 data: [],
                 err
-            })
+            });
         });
 };
 
@@ -117,4 +117,4 @@ module.exports = {
     findPromosByQuery,
     postNewPromos,
     updatePromos
-}
+};

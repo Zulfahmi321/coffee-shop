@@ -1,6 +1,7 @@
-require("dotenv").config()
+require("dotenv").config();
 //1. inisialisasi package express dengan nama variabelnya bebas
 const express = require("express");
+
 
 // daftarkan router
 const mainRouter = require("./src/routes/index");
@@ -33,8 +34,11 @@ db.connect()
         //handler untuk body berbentuk raw json
         server.use(express.json());
 
+        //untuk melihat gambar di postman
+        server.use(express.static("public"));
+
         //pasang router ke server
-        server.use(mainRouter)
+        server.use(mainRouter);
 
         server.listen(PORT, () => {
             console.log(`Server Is Running On Port ${PORT}`);
@@ -42,5 +46,5 @@ db.connect()
     })
     .catch((err) => {
         console.log(err);
-    })
+    });
 

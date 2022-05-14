@@ -3,7 +3,8 @@ const Router = express.Router();
 
 //import controllernya
 const productController = require("../controllers/product");
-const validate = require("../middlewares/validate");
+const { bodyPostProduct } = require("../middlewares/fieldsValidator");
+const { checkToken } = require("../middlewares/auth");
 
 Router.get("/all", productController.getAllProducts);
 
@@ -11,11 +12,9 @@ Router.get("/best", productController.getBestProducts);
 
 Router.get("/:id", productController.getProductById);
 
-Router.get("/", productController.findProductByQuery);
+Router.post("/", checkToken, bodyPostProduct, productController.postNewProduct);
 
-Router.post("/", validate.productData, productController.postNewProduct);
-
-Router.put("/:id", productController.updateProduct);
+Router.patch("/:id", productController.updateProduct);
 
 Router.delete("/:id", productController.deleteProductById);
 
