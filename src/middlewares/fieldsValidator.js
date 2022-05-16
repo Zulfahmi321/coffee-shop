@@ -21,7 +21,7 @@ fieldsValidator.bodyPostRegisterUser = (req, res, next) => {
 };
 
 fieldsValidator.bodyPostProduct = (req, res, next) => {
-    const { name, price, photo, description, delivery_info, stock, category_id } = req.body;
+    const { name, price, description, delivery_info, stock, category_id } = req.body;
     if (!name) {
         return res.status(400).json({
             err: "Input name!"
@@ -32,11 +32,6 @@ fieldsValidator.bodyPostProduct = (req, res, next) => {
             err: "Input price!"
         });
     }
-    if (!photo) {
-        return res.status(400).json({
-            err: "Input photo!"
-        });
-    }
     if (!description) {
         return res.status(400).json({
             err: "Input description!"
@@ -45,11 +40,6 @@ fieldsValidator.bodyPostProduct = (req, res, next) => {
     if (!delivery_info) {
         return res.status(400).json({
             err: "Input delivery info!"
-        });
-    }
-    if (!photo) {
-        return res.status(400).json({
-            err: "Input photo!"
         });
     }
     if (!stock) {
@@ -125,6 +115,21 @@ fieldsValidator.bodyPostTransaction = (req, res, next) => {
     if (!promo_id) {
         return res.status(400).json({
             err: "Input promo id!"
+        });
+    }
+    next();
+};
+
+fieldsValidator.bodyPostSignInUser = (req, res, next) => {
+    const { email, password } = req.body;
+    if (!email) {
+        return res.status(400).json({
+            err: "Input email!"
+        });
+    }
+    if (!password) {
+        return res.status(400).json({
+            err: "Input password!"
         });
     }
     next();

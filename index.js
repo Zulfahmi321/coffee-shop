@@ -2,7 +2,6 @@ require("dotenv").config();
 //1. inisialisasi package express dengan nama variabelnya bebas
 const express = require("express");
 
-
 // daftarkan router
 const mainRouter = require("./src/routes/index");
 

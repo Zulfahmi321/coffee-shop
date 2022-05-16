@@ -109,9 +109,13 @@ const deleteUserById = (req, res) => {
 };
 
 const updateUser = (req, res) => {
-    const id = req.userPayload.id;
     const { file = null } = req;
-    updateUserFromServer(id, file, req.body)
+    let photo = null;
+    if (file !== null) {
+        photo = file.path.replace("public", "").replace(/\\/g, "/");
+    }
+    const id = req.userPayload.id;
+    updateUserFromServer(id, photo, req.body)
         .then((result) => {
             successResponse(res, 200, result.data, null);
         })

@@ -153,15 +153,12 @@ const deleteUserFromServer = (id_user) => {
 //     });
 // };
 
-const updateUserFromServer = (id, file, body) => {
+const updateUserFromServer = (id, photo, body) => {
     return new Promise((resolve, reject) => {
-        // const id = req.userPayload.id;
-        // const { file = null } = req;
-        const photo = file.path.replace("public", "").replace(/\\/g, "/");
         const { username, first_name, last_name, email, password, mobile_number, date_of_birth, gender, address } = body;
         //Fungsi MySQL COALESCE adalah mengembalikan ekspresi non-null pertama dalam daftar. Yang berguna untuk memeriksa suatu kolom ada datanya atau tidak.
         const sqlQuery =
-            "UPDATE users SET username= COALESCE($1, username), first_name= COALESCE($2, first_name), last_name= COALESCE($3, last_name), email= COALESCE($4, email), password= COALESCE($5, password), mobile_number= COALESCE($6, mobile_number), photo= COALESCE($7, photo), date_of_birth= COALESCE($8::date, date_of_birth), gender= COALESCE($9, gender), address= COALESCE($10, address) WHERE id=$11 RETURNING username, first_name, last_name,email, mobile_number, photo, date_of_birth,gender,address";
+            "UPDATE users SET username= COALESCE(NULLIF($1, ''), username), first_name= COALESCE(NULLIF($2, ''), first_name), last_name= COALESCE(NULLIF($3, ''), last_name), email= COALESCE(NULLIF($4, ''), email), password= COALESCE(NULLIF($5, ''), password), mobile_number= COALESCE(NULLIF($6, ''), mobile_number), photo= COALESCE($7, photo), date_of_birth= COALESCE(NULLIF($8, '')::date, date_of_birth), gender= COALESCE(NULLIF($9, ''), gender), address= COALESCE(NULLIF($10, ''), address) WHERE id=$11 RETURNING username, first_name, last_name,email, mobile_number, photo, date_of_birth,gender,address";
         db.query(sqlQuery, [username, first_name, last_name, email, password, mobile_number, photo, date_of_birth, gender, address, id])
             .then((result) => {
                 const response = {

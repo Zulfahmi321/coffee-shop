@@ -1,22 +1,49 @@
 const productModel = require("../models/product");
 const { getProductsFromServer, getSingleProductFromServer, createNewProduct, deleteProductFromServer, updateProductFromServer, getBestSellingProducts } = productModel;
 
+const { successResponse, errorResponse } = require("../helper/response");
+
 const getAllProducts = (req, res) => {
     getProductsFromServer(req.query)
         .then((result) => {
-            const { total, data } = result;
-            res.status(200).json({
-                data,
-                total,
-                err: null
-            });
+            const { totalData, totalPage, data } = result;
+            const { name, category_name, sort, order, page = 1, limit } = req.query;
+            let nextPage = "/product/all?";
+            let prevPage = "/product/all?";
+            if (name) {
+                nextPage += `name=${name}&`;
+                prevPage += `name=${name}&`;
+            }
+            if (category_name) {
+                nextPage += `category_name=${category_name}&`;
+                prevPage += `category_name=${category_name}&`;
+            }
+            if (sort) {
+                nextPage += `sort=${sort}&`;
+                prevPage += `sort=${sort}&`;
+            }
+            if (order) {
+                nextPage += `order=${order}&`;
+                prevPage += `order=${order}&`;
+            }
+            if (limit) {
+                nextPage += `limit=${limit}&`;
+                prevPage += `limit=${limit}&`;
+            }
+            nextPage += `page=${Number(page) + 1}`;
+            prevPage += `page=${Number(page) - 1}`;
+            const meta = {
+                totalData,
+                totalPage,
+                currentPage: Number(page),
+                nextPage: Number(page) === totalPage ? null : nextPage,
+                prevPage: Number(page) === 1 ? null : prevPage
+            };
+            successResponse(res, 200, data, meta);
         })
         .catch((error) => {
             const { err, status } = error;
-            res.status(status).json({
-                data: [],
-                err,
-            });
+            errorResponse(res, status, err);
         });
 };
 
@@ -59,18 +86,13 @@ const getProductById = (req, res) => {
 
 
 const postNewProduct = (req, res) => {
-    createNewProduct(req.body)
-        .then(({ data }) => {
-            res.status(200).json({
-                err: null,
-                data,
-            });
+    const { file = null } = req;
+    createNewProduct(file, req.body)
+        .then((result) => {
+            successResponse(res, 200, result.data, null);
         })
         .catch(error => {
-            res.status(500).json({
-                err: error,
-                data: [],
-            });
+            errorResponse(res, 500, error);
         });
 };
 
@@ -93,22 +115,19 @@ const deleteProductById = (req, res) => {
 };
 
 const updateProduct = (req, res) => {
-    const id = req.params.id;
-    updateProductFromServer(id, req.body)
+    const idProduct = req.params.id;
+    const { file } = req;
+    let photo = "";
+
+    if (file !== undefined) {
+        photo = file.path.replace("public", "").replace(/\\/g, "/");
+    }
+    updateProductFromServer(photo, idProduct, req.body)
         .then((result) => {
-            const { total, data } = result;
-            res.status(200).json({
-                data,
-                total,
-                err: null
-            });
+            successResponse(res, 200, result.data, null);
         })
         .catch((error) => {
-            const { err, status } = error;
-            res.status(status).json({
-                data: [],
-                err
-            });
+            errorResponse(res, 500, error);
         });
 };
 

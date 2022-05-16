@@ -3,11 +3,11 @@ const Router = express.Router();
 
 const authController = require("../controllers/auth");
 const { checkDuplicate } = require("../middlewares/auth");
-const { bodyPostRegisterUser } = require("../middlewares/fieldsValidator");
+const { bodyPostRegisterUser, bodyPostSignInUser } = require("../middlewares/fieldsValidator");
 //register
 Router.post("/new", bodyPostRegisterUser, checkDuplicate, authController.register);
 //sign in
-Router.post("/", authController.signIn);
+Router.post("/", bodyPostSignInUser, authController.signIn);
 //logout
 Router.delete("/", (_, res) => {
     res.json({

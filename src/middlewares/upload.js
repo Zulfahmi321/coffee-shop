@@ -21,7 +21,7 @@ const limit = {
 //  menentukan ektensi file upload
 const imageOnlyFilter = (req, file, cb) => {
     const extName = path.extname(file.originalname);
-    const allowedExt = /jpg|png|JPEG|PNG/;
+    const allowedExt = /jpg|jpeg|png|JPG|JPEG|PNG/;
     if (!allowedExt.test(extName))
         return cb(new Error("File Extension JPG or PNG 2mb"), false);
     cb(null, true);
@@ -32,6 +32,18 @@ const imageUpload = multer({
     storage: imageStorage,
     limits: limit,
     fileFilter: imageOnlyFilter,
-});
+}).single("photo");
 
-module.exports = imageUpload;
+const upImageFile = (req, res, next) => {
+    imageUpload(req, res, (err) => {
+        if (err) {
+            res.status(400).json({
+                error: err.message,
+            });
+            return;
+        }
+        next();
+    });
+};
+
+module.exports = upImageFile;
