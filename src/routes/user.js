@@ -5,23 +5,23 @@ const Router = express.Router();
 
 //import controllernya
 const userController = require("../controllers/user");
-const { checkToken } = require("../middlewares/auth");
+const { checkToken, userRole, adminRole } = require("../middlewares/auth");
 const upImagefile = require("../middlewares/upload");
 
 // mendapatkan semua data user
-Router.get("/all", userController.getAllUsers);
+Router.get("/all", adminRole, checkToken, userController.getAllUsers);
 
 // mendapatkan satu data user berdasarkan id
-Router.get("/:id", userController.getUserById);
+Router.get("/:id", adminRole, checkToken, userController.getUserById);
 
 // melakukan pencarian data user
-Router.get("/", userController.findUserByQuery);
+Router.get("/", adminRole, checkToken, userController.findUserByQuery);
 
 // menambahkan data user
-Router.post("/", userController.postNewUser);
+// Router.post("/", userController.postNewUser);
 
 // update data user
-Router.patch("/", checkToken, upImagefile, userController.updateUser);
+Router.patch("/", userRole, checkToken, upImagefile, userController.updateUser);
 
 // Router.patch("/", checkToken, imageUpload.single("photo"), (req, res) => {
 //     const id = req.userPayload.id;
@@ -40,7 +40,7 @@ Router.patch("/", checkToken, upImagefile, userController.updateUser);
 // });
 
 // delete data user berdasarkan id
-Router.delete("/:id", userController.deleteUserById);
+Router.delete("/:id", checkToken, userController.deleteUserById);
 
 
 module.exports = Router;

@@ -35,7 +35,25 @@ const checkToken = (req, res, next) => {
         });
 };
 
+const adminRole = (req, res, next) => {
+    const { roles } = req.userPayload;
+    if (roles !== "admin") {
+        return errorResponse(res, 401, { msg: "You are not admin" });
+    }
+    next();
+};
+
+const userRole = (req, res, next) => {
+    const { roles } = req.userPayload;
+    if (roles !== "user") {
+        return errorResponse(res, 401, { msg: "You are not user" });
+    }
+    next();
+};
+
 module.exports = {
     checkDuplicate,
-    checkToken
+    checkToken,
+    adminRole,
+    userRole
 };
