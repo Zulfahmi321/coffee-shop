@@ -8,8 +8,8 @@ const getAllProducts = (req, res) => {
         .then((result) => {
             const { totalData, totalPage, data } = result;
             const { name, category_name, sort, order, page = 1, limit } = req.query;
-            let nextPage = "/product/all?";
-            let prevPage = "/product/all?";
+            let nextPage = "/product/?";
+            let prevPage = "/product/?";
             if (name) {
                 nextPage += `name=${name}&`;
                 prevPage += `name=${name}&`;

@@ -4,19 +4,19 @@ const Router = express.Router();
 //import controllernya
 const productController = require("../controllers/product");
 const { bodyPostProduct } = require("../middlewares/fieldsValidator");
-const { checkToken, adminRole, userRole } = require("../middlewares/auth");
+const { checkToken, adminRole } = require("../middlewares/auth");
 const upImageFile = require("../middlewares/upload");
 
-Router.get("/all", productController.getAllProducts);
+Router.get("/", productController.getAllProducts);
 
 Router.get("/best", productController.getBestProducts);
 
-Router.get("/:id", userRole, checkToken, productController.getProductById);
+Router.get("/:id", productController.getProductById);
 
-Router.post("/", adminRole, checkToken, upImageFile, bodyPostProduct, productController.postNewProduct);
+Router.post("/", checkToken, adminRole, upImageFile, bodyPostProduct, productController.postNewProduct);
 
-Router.patch("/:id", adminRole, checkToken, upImageFile, productController.updateProduct);
+Router.patch("/:id", checkToken, adminRole, upImageFile, productController.updateProduct);
 
-Router.delete("/:id", adminRole, productController.deleteProductById);
+Router.delete("/:id", adminRole, checkToken, productController.deleteProductById);
 
 module.exports = Router;

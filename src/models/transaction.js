@@ -3,7 +3,7 @@ const { v4: uuidV4 } = require("uuid");
 
 const getTransactionFromServer = () => {
     return new Promise((resolve, reject) => {
-        db.query("SELECT users.username, products.name, products.price, sizes.name, quantity ,(price * quantity / 100) * 5 as tax, (price * quantity) + (price * quantity / 100) * 5 as subtotal, payments.name, deliverys.name, date, users.address  FROM transactions JOIN users ON transactions.user_id = users.id JOIN sizes ON transactions.size_id = sizes.id JOIN products ON transactions.product_id = products.id JOIN payments ON transactions.payment_id = payments.id JOIN deliverys ON transactions.delivery_id = deliverys.id")
+        db.query("SELECT products.name as products,products.price,transactions.quantity,products.price*transactions.quantity as subtotal, transactions.date from transactions join products on transactions.product_id = products.id ")
             .then(result => {
                 const response = {
                     total: result.rowCount,

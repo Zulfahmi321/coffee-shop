@@ -9,10 +9,7 @@ const auth = {};
 
 auth.register = (req, res) => {
     const { body } = req;
-    const { email, password, confirm_password, mobile_number } = body;
-    if (password !== confirm_password) {
-        return errorResponse(res, 400, { msg: "Password And Confirm Password Not Match!" });
-    }
+    const { email, password, mobile_number } = body;
     bcrypt
         .hash(password, 10)
         .then((hashedPassword) => {
@@ -40,7 +37,7 @@ auth.signIn = async (req, res) => {
         const data = await getPassByUserEmail(email);
         const match = await bcrypt.compare(password, data.password);
         if (!match)
-            return errorResponse(res, 400, { msg: "Password is wrong" });
+            return errorResponse(res, 400, { msg: "Password or Email is wrong" });
         //generate jwt
         const payload = {
             id: data.id,
@@ -49,7 +46,7 @@ auth.signIn = async (req, res) => {
         };
         const jwtOptions = {
             issuer: process.env.JWT_ISSUER,
-            expiresIn: "10000s",
+            expiresIn: "300s",
         };
         const token = jwt.sign(payload, process.env.JWT_SECRET, jwtOptions);
         //return

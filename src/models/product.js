@@ -33,7 +33,7 @@ const getProductsFromServer = (query) => {
         if (name && category_name) {
             sqlQuery += " WHERE LOWER(products.name) LIKE LOWER('%' || $1 || '%') AND LOWER(categorys.name) = $2 ORDER BY " + sort + " " + order + " LIMIT $3 OFFSET $4";
             totalQuery += " WHERE LOWER(products.name) LIKE LOWER('%' || $1 || '%') AND LOWER(categorys.name) = $2";
-            parameterized.push(name, category_name), Number(limit), offset;
+            parameterized.push(name, category_name, Number(limit), offset);
             totalParam.push(name, category_name);
         }
         db.query(sqlQuery, parameterized)

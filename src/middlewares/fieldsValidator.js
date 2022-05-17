@@ -22,6 +22,7 @@ fieldsValidator.bodyPostRegisterUser = (req, res, next) => {
 
 fieldsValidator.bodyPostProduct = (req, res, next) => {
     const { name, price, description, delivery_info, stock, category_id } = req.body;
+    const { file } = req;
     if (!name) {
         return res.status(400).json({
             err: "Input name!"
@@ -50,6 +51,11 @@ fieldsValidator.bodyPostProduct = (req, res, next) => {
     if (!category_id) {
         return res.status(400).json({
             err: "Input category!"
+        });
+    }
+    if (!file) {
+        return res.status(400).json({
+            err: "Input photo!"
         });
     }
     next();
@@ -117,6 +123,7 @@ fieldsValidator.bodyPostTransaction = (req, res, next) => {
             err: "Input promo id!"
         });
     }
+
     next();
 };
 
