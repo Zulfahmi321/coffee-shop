@@ -17,6 +17,6 @@ Router.post("/", checkToken, adminRole, upImageFile, bodyPostProduct, productCon
 
 Router.patch("/:id", checkToken, adminRole, upImageFile, productController.updateProduct);
 
-Router.delete("/:id", adminRole, checkToken, productController.deleteProductById);
+Router.delete("/:id", checkToken, adminRole, productController.deleteProductById);
 
 module.exports = Router;

@@ -2,7 +2,8 @@ const transactionModel = require("../models/transaction");
 const { createNewTransaction, findTransactionUser, getTransactionFromServer, getSingleTransactionsFromServer } = transactionModel;
 
 const postNewTransaction = (req, res) => {
-    createNewTransaction(req.body)
+    const id = req.userPayload.id;
+    createNewTransaction(req.body, id)
         .then(({ data }) => {
             res.status(200).json({
                 err: null,
@@ -37,7 +38,8 @@ const getAllTransaction = (_, res) => {
 };
 
 const findTransactionUserById = (req, res) => {
-    findTransactionUser(req.query)
+    const id = req.userPayload.id;
+    findTransactionUser(id)
         .then(({ data, total }) => {
             res.status(200).json({
                 err: null,

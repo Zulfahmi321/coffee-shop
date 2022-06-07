@@ -33,7 +33,7 @@ const getAllUsers = (_, res) => {
 // - form-urlencoded
 // - raw json
 const getUserById = (req, res) => {
-    const id = req.params.id;
+    const id = req.userPayload.id;
     getSingleUserFromServer(id)
         .then((data) => {
             // const {data} = result
@@ -117,7 +117,7 @@ const updateUser = (req, res) => {
     const id = req.userPayload.id;
     updateUserFromServer(id, photo, req.body)
         .then((result) => {
-            successResponse(res, 200, result.data, null);
+            successResponse(res, 200, result.data, { msg: "Update Success" }, null);
         })
         .catch((error) => {
             errorResponse(res, 500, error);

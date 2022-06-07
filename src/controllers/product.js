@@ -116,10 +116,10 @@ const deleteProductById = (req, res) => {
 
 const updateProduct = (req, res) => {
     const idProduct = req.params.id;
-    const { file } = req;
-    let photo = "";
+    const { file = null } = req;
+    let photo = null;
 
-    if (file !== undefined) {
+    if (file !== null) {
         photo = file.path.replace("public", "").replace(/\\/g, "/");
     }
     updateProductFromServer(photo, idProduct, req.body)

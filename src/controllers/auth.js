@@ -46,11 +46,11 @@ auth.signIn = async (req, res) => {
         };
         const jwtOptions = {
             issuer: process.env.JWT_ISSUER,
-            expiresIn: "300s",
+            expiresIn: "30000s",
         };
         const token = jwt.sign(payload, process.env.JWT_SECRET, jwtOptions);
         //return
-        successResponse(res, 200, { email, token }, null);
+        successResponse(res, 200, { email, token, msg: "Login Success" }, null);
     }
     catch (error) {
         const { status, err } = error;

@@ -3,7 +3,7 @@ const { v4: uuidV4 } = require("uuid");
 
 const getProductsFromServer = (query) => {
     return new Promise((resolve, reject) => {
-        const { name, category_name, sort = "category_id", order = "asc", page = 1, limit = 3 } = query;
+        const { name, category_name, sort = "category_id", order = "asc", page = 1, limit = 12 } = query;
         // page = 1 2 3 4
         // offset = 0 3 6 9
         // rumusan offset = (page - 1) * limit
@@ -135,11 +135,11 @@ const createNewProduct = (file, body) => {
     });
 };
 
-const deleteProductFromServer = (id) => {
+const deleteProductFromServer = (id_product) => {
     return new Promise((resolve, reject) => {
         // parameterized query
         const sqlQuery = "DELETE FROM products WHERE id = $1 RETURNING *";
-        db.query(sqlQuery, [id])
+        db.query(sqlQuery, [id_product])
             .then(result => {
                 if (result.rows.length === 0) {
                     return reject({

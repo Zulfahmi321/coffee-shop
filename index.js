@@ -16,6 +16,9 @@ const server = express();
 //untuk menjalankan di local maka mendefinisikan port localnya
 const PORT = 8080;
 
+// CORS
+
+const cors = require("cors");
 //pengkondisian koneksi db berhasil, maka jalankan local server
 db.connect()
     .then(() => {
@@ -35,6 +38,15 @@ db.connect()
 
         //untuk melihat gambar di postman
         server.use(express.static("public"));
+
+        // pasang cors
+        const corsOptions = {
+            origin: ["http://127.0.0.1:5500", "http://localhost:3000"],
+            methods: ["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
+            allowedHeaders: ["Content-Type", "Authorization"],
+          };
+          server.use(cors(corsOptions));
+          // server.options("*", cors(corsOptions));
 
         //pasang router ke server
         server.use(mainRouter);

@@ -5,23 +5,23 @@ const Router = express.Router();
 
 //import controllernya
 const userController = require("../controllers/user");
-const { checkToken, userRole, adminRole } = require("../middlewares/auth");
+const { checkToken, adminRole } = require("../middlewares/auth");
 const upImagefile = require("../middlewares/upload");
 
 // mendapatkan semua data user
 Router.get("/all", checkToken, adminRole, userController.getAllUsers);
 
 // mendapatkan satu data user berdasarkan id
-Router.get("/:id", checkToken, adminRole, userController.getUserById);
+Router.get("/", checkToken, userController.getUserById);
 
 // melakukan pencarian data user
-Router.get("/", checkToken, adminRole, userController.findUserByQuery);
+Router.get("/userid", checkToken, adminRole, userController.findUserByQuery);
 
 // menambahkan data user
 // Router.post("/", userController.postNewUser);
 
 // update data user
-Router.patch("/", checkToken, userRole, upImagefile, userController.updateUser);
+Router.patch("/", checkToken, upImagefile, userController.updateUser);
 
 // Router.patch("/", checkToken, imageUpload.single("photo"), (req, res) => {
 //     const id = req.userPayload.id;
