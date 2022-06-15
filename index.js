@@ -16,7 +16,7 @@ const db = require("./src/config/db");
 const server = express();
 
 //untuk menjalankan di local maka mendefinisikan port localnya
-const PORT = 8080;
+const PORT = process.env.PORT || 8080;
 
 // CORS
 
