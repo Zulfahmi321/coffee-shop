@@ -10,7 +10,7 @@ const mainRouter = require("./src/routes/index");
 //import config db
 const db = require("./src/config/db");
 
-const logger = require("morgan");
+// const logger = require("morgan");
 
 //2. create aplikasi express
 const server = express();
@@ -27,9 +27,9 @@ db.connect()
         console.log("DB Connected");
 
         // logger
-        server.use(
-            logger(":method :url :status :res[content-length] - :response-time ms")
-        );
+        // server.use(
+        //     logger(":method :url :status :res[content-length] - :response-time ms")
+        // );
 
         //pasang middleware global
         //handler untuk body berbentuk form urlencoded
