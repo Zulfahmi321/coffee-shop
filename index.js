@@ -5,6 +5,8 @@ const express = require("express");
 // daftarkan router
 const mainRouter = require("./src/routes/index");
 
+//input
+
 //import config db
 const db = require("./src/config/db");
 
