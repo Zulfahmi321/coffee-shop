@@ -165,7 +165,7 @@ const updateProductFromServer = (photo, idProduct, body) => {
     return new Promise((resolve, reject) => {
         const { name, price, description, delivery_info, stock, category_id, create_at } = body;
         const sqlQuery =
-            "UPDATE products SET name= COALESCE(NULLIF($1, ''), name), price= COALESCE(NULLIF($2, '')::money, price), photo= COALESCE($3, photo), description= COALESCE(NULLIF($4, ''), description), delivery_info= COALESCE(NULLIF($5, ''),delivery_info), stock= COALESCE(NULLIF($6, '')::numeric, stock),category_id= COALESCE(NULLIF($7, '')::int8, category_id),create_at= COALESCE(NULLIF($8, '')::date, create_at) WHERE id=$9 RETURNING *";
+            "UPDATE products SET name= COALESCE(NULLIF($1, ''), name), price= COALESCE(NULLIF($2, '')::number, price), photo= COALESCE($3, photo), description= COALESCE(NULLIF($4, ''), description), delivery_info= COALESCE(NULLIF($5, ''),delivery_info), stock= COALESCE(NULLIF($6, '')::numeric, stock),category_id= COALESCE(NULLIF($7, '')::int8, category_id),create_at= COALESCE(NULLIF($8, '')::date, create_at) WHERE id=$9 RETURNING *";
         db.query(sqlQuery, [name, price, photo, description, delivery_info, stock, category_id, create_at, idProduct])
             .then((result) => {
                 if (result.rows.length === 0) {

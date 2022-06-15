@@ -3,7 +3,7 @@ const { v4: uuidV4 } = require("uuid");
 
 const getTransactionFromServer = () => {
     return new Promise((resolve, reject) => {
-        db.query("SELECT  users.username, users.email, products.name AS product, products.price, sizes.name AS size, quantity ,(price * quantity / 100) * 5 as tax, (price * quantity) + (price * quantity / 100) * 5 as subtotal, payments.name AS payment, deliverys.name AS delivery, date, users.address FROM transactions LEFT JOIN users ON transactions.user_id = users.id LEFT JOIN sizes ON transactions.size_id = sizes.id LEFT JOIN products ON transactions.product_id = products.id LEFT JOIN payments ON transactions.payment_id = payments.id LEFT JOIN deliverys ON transactions.delivery_id = deliverys.id ")
+        db.query("SELECT  users.username, users.email, products.name AS product, products.price, sizes.name AS size, products.photo,quantity ,(price * quantity / 100) * 5 as tax, (price * quantity) + (price * quantity / 100) * 5 as subtotal, payments.name AS payment, deliverys.name AS delivery, date, users.address FROM transactions LEFT JOIN users ON transactions.user_id = users.id LEFT JOIN sizes ON transactions.size_id = sizes.id LEFT JOIN products ON transactions.product_id = products.id LEFT JOIN payments ON transactions.payment_id = payments.id LEFT JOIN deliverys ON transactions.delivery_id = deliverys.id ")
             .then(result => {
                 const response = {
                     total: result.rowCount,
@@ -22,7 +22,7 @@ const getTransactionFromServer = () => {
 
 const findTransactionUser = (id_user) => {
     return new Promise((resolve, reject) => {
-        let sqlQuery = "SELECT  users.username, users.email, products.name AS product, products.price, sizes.name AS size, quantity ,(price * quantity / 100) * 5 as tax, (price * quantity) + (price * quantity / 100) * 5 as subtotal, payments.name AS payment, deliverys.name AS delivery, date, users.address FROM transactions LEFT JOIN users ON transactions.user_id = users.id LEFT JOIN sizes ON transactions.size_id = sizes.id LEFT JOIN products ON transactions.product_id = products.id LEFT JOIN payments ON transactions.payment_id = payments.id LEFT JOIN deliverys ON transactions.delivery_id = deliverys.id  WHERE users.id =$1";
+        let sqlQuery = "SELECT  users.username, users.email, products.name AS product, products.price, sizes.name AS size, products.photo,quantity ,(price * quantity / 100) * 5 as tax, (price * quantity) + (price * quantity / 100) * 5 as subtotal, payments.name AS payment, deliverys.name AS delivery, date, users.address FROM transactions LEFT JOIN users ON transactions.user_id = users.id LEFT JOIN sizes ON transactions.size_id = sizes.id LEFT JOIN products ON transactions.product_id = products.id LEFT JOIN payments ON transactions.payment_id = payments.id LEFT JOIN deliverys ON transactions.delivery_id = deliverys.id  WHERE users.id =$1";
         db.query(sqlQuery,[id_user])
             .then(result => {
                 if (result.rows.length === 0) {

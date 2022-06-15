@@ -2,7 +2,7 @@ const db = require("../config/db");
 
 const getUsersFromServer = () => {
     return new Promise((resolve, reject) => {
-        db.query("SELECT id username, first_name, last_name,email, mobile_number, photo, date_of_birth,gender,address FROM users")
+        db.query("SELECT id username, first_name, last_name,email, mobile_number, photo, to_char(date_of_birth, 'yyyy-MM-dd') as date_of_birth,gender,address FROM users")
             .then(result => {
                 const response = {
                     total: result.rowCount,
