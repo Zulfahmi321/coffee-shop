@@ -118,7 +118,6 @@ const updateProduct = (req, res) => {
     const idProduct = req.params.id;
     const { file = null } = req;
     let photo = null;
-
     if (file !== null) {
         // photo = file.path.replace("public", "").replace(/\\/g, "/");
         photo = file.path;
