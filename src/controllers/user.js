@@ -112,7 +112,8 @@ const updateUser = (req, res) => {
     const { file = null } = req;
     let photo = null;
     if (file !== null) {
-        photo = file.path.replace("public", "").replace(/\\/g, "/");
+        // photo = file.path.replace("public", "").replace(/\\/g, "/");
+        photo = file.path;
     }
     const id = req.userPayload.id;
     updateUserFromServer(id, photo, req.body)

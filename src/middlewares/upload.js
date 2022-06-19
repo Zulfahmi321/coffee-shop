@@ -1,16 +1,26 @@
 const multer = require("multer");
 const path = require("path");
+const cloudinary = require("cloudinary").v2;
+const { CloudinaryStorage } = require("multer-storage-cloudinary");
 
 // set storage
-const imageStorage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, "./public/images");
-    },
-    filename: (req, file, cb) => {
-        const suffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
-        const filename = `${file.fieldname}-${suffix}${path.extname(file.originalname)}`;
-        cb(null, filename);
-    },
+// const imageStorage = multer.diskStorage({
+//     destination: (req, file, cb) => {
+//         cb(null, "./public/images");
+//     },
+//     filename: (req, file, cb) => {
+//         const suffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
+//         const filename = `${file.fieldname}-${suffix}${path.extname(file.originalname)}`;
+//         cb(null, filename);
+//     },
+// });
+
+// SET STORAGE CLOUDINARY
+const cloudinaryStorage = new CloudinaryStorage({
+    cloudinary: cloudinary,
+    params:{
+        folder: "coffee-shop"
+    }
 });
 
 // menentukan ukuran
@@ -29,7 +39,8 @@ const imageOnlyFilter = (req, file, cb) => {
 
 // upload image
 const imageUpload = multer({
-    storage: imageStorage,
+    // storage: imageStorage,
+    storage: cloudinaryStorage,
     limits: limit,
     fileFilter: imageOnlyFilter,
 }).single("photo");

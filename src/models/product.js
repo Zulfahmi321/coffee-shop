@@ -114,7 +114,8 @@ const getSingleProductFromServer = (id) => {
 
 const createNewProduct = (file, body) => {
     return new Promise((resolve, reject) => {
-        const photo = file.path.replace("public", "").replace(/\\/g, "/");
+        // const photo = file.path.replace("public", "").replace(/\\/g, "/");
+        const photo = file.path;
         const { name, price, description, delivery_info, stock, category_id } = body;
         const sqlQuery = "INSERT INTO products(id, name, price, photo, description, delivery_info, stock, category_id, create_at) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *";
         const create_at = new Date(Date.now());
