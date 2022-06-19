@@ -1,4 +1,6 @@
 require("dotenv").config();
+
+const cloudinaryConfig = require("./src/config/cloudinary");
 //1. inisialisasi package express dengan nama variabelnya bebas
 const express = require("express");
 
@@ -46,12 +48,14 @@ db.connect()
             origin: ["http://127.0.0.1:5500", "http://localhost:3000", "https://love-coffee-shop.netlify.app"],
             methods: ["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
             allowedHeaders: ["Content-Type", "Authorization"],
-          };
-          server.use(cors(corsOptions));
+        };
+        server.use(cors(corsOptions));
           // server.options("*", cors(corsOptions));
 
         //pasang router ke server
         server.use(mainRouter);
+
+        server.use(cloudinaryConfig);
 
         server.listen(PORT, () => {
             console.log(`Server Is Running On Port ${PORT}`);

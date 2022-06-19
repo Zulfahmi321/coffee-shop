@@ -120,7 +120,8 @@ const updateProduct = (req, res) => {
     let photo = null;
 
     if (file !== null) {
-        photo = file.path.replace("public", "").replace(/\\/g, "/");
+        // photo = file.path.replace("public", "").replace(/\\/g, "/");
+        photo = file.path;
     }
     updateProductFromServer(photo, idProduct, req.body)
         .then((result) => {
