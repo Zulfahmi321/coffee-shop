@@ -52,10 +52,10 @@ db.connect()
         server.use(cors(corsOptions));
           // server.options("*", cors(corsOptions));
 
+        server.use(cloudinaryConfig);
+
         //pasang router ke server
         server.use(mainRouter);
-
-        server.use(cloudinaryConfig);
 
         server.listen(PORT, () => {
             console.log(`Server Is Running On Port ${PORT}`);
