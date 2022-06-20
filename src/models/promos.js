@@ -80,13 +80,13 @@ const findPromos = (query) => {
 
 const createNewPromos = (body) => {
     return new Promise((resolve, reject) => {
-        const { product_id, code, discount, description } = body;
-        const sqlQuery = "INSERT INTO promos(id, product_id, code, discount, expired_start, expired_end, description) VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING *";
-        const expired_start = new Date(Date.now());
-        const expired_end = new Date();
-        expired_end.setDate(expired_end.getDate() + 6);
+        const { code, discount, description, expired_start, expired_end, normal_price } = body;
+        const sqlQuery = "INSERT INTO promos(id, code, discount, expired_start, expired_end, description, normal_price) VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING *";
+        // const expired_start = new Date(Date.now());
+        // const expired_end = new Date();
+        // expired_end.setDate(expired_end.getDate() + 6);
         const id = uuidV4();
-        db.query(sqlQuery, [id, product_id, code, discount, expired_start, expired_end, description])
+        db.query(sqlQuery, [id, code, discount, expired_start, expired_end, description, normal_price])
             .then(({ rows }) => {
                 const response = {
                     data: rows[0],
@@ -130,10 +130,10 @@ const deletePromosFromServer = (id_promo) => {
 
 const updatePromosFromServer = (id_promo, body) => {
     return new Promise((resolve, reject) => {
-        const { product_id_, code, discount, expired_start, expired_end, description } = body;
+        const { normal_price, code, discount, expired_start, expired_end, description } = body;
         const sqlQuery =
-            "UPDATE promos SET product_id= COALESCE(NULLIF($1, '')::int8, product_id), code= COALESCE(NULLIF($2, ''), code), discount= COALESCE(NULLIF($3, '')::numeric, discount), expired_start= COALESCE(NULLIF($4, '')::date, expired_start), expired_end= COALESCE(NULLIF($5, '')::date, expired_end), description= COALESCE(NULLIF($6, ''), description) WHERE id=$7 RETURNING *";
-        db.query(sqlQuery, [product_id_, code, discount, expired_start, expired_end, description, id_promo])
+            "UPDATE promos SET normal_price= COALESCE(NULLIF($1, '')::int4, normal_price), code= COALESCE(NULLIF($2, ''), code), discount= COALESCE(NULLIF($3, '')::numeric, discount), expired_start= COALESCE(NULLIF($4, '')::date, expired_start), expired_end= COALESCE(NULLIF($5, '')::date, expired_end), description= COALESCE(NULLIF($6, ''), description) WHERE id=$7 RETURNING *";
+        db.query(sqlQuery, [normal_price, code, discount, expired_start, expired_end, description, id_promo])
             .then((result) => {
                 if (result.rows.length === 0) {
                     return reject({

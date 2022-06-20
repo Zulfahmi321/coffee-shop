@@ -62,10 +62,10 @@ fieldsValidator.bodyPostProduct = (req, res, next) => {
 };
 
 fieldsValidator.bodyPostPromo = (req, res, next) => {
-    const { product_id, code, discount, description } = req.body;
-    if (!product_id) {
+    const { normal_price, code, discount, description } = req.body;
+    if (!normal_price) {
         return res.status(400).json({
-            err: "Input id product!"
+            err: "Input Normal price!"
         });
     }
     if (!code) {
