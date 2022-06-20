@@ -132,7 +132,7 @@ const updatePromosFromServer = (id_promo, body) => {
     return new Promise((resolve, reject) => {
         const { normal_price, code, discount, expired_start, expired_end, description, name } = body;
         const sqlQuery =
-            "UPDATE promos SET normal_price= COALESCE(NULLIF($1, '')::int4, normal_price), code= COALESCE(NULLIF($2, ''), code), discount= COALESCE(NULLIF($3, '')::numeric, discount), expired_start= COALESCE(NULLIF($4, '')::date, expired_start), expired_end= COALESCE(NULLIF($5, '')::date, expired_end), description= COALESCE(NULLIF($6, ''), description), name= COALESCE(NULLIF($7, ''), name) WHERE id=$7 RETURNING *";
+            "UPDATE promos SET normal_price= COALESCE(NULLIF($1, '')::int4, normal_price), code= COALESCE(NULLIF($2, ''), code), discount= COALESCE(NULLIF($3, '')::numeric, discount), expired_start= COALESCE(NULLIF($4, '')::date, expired_start), expired_end= COALESCE(NULLIF($5, '')::date, expired_end), description= COALESCE(NULLIF($6, ''), description), name= COALESCE(NULLIF($7, ''), name) WHERE id=$8 RETURNING *";
         db.query(sqlQuery, [normal_price, code, discount, expired_start, expired_end, description, name, id_promo])
             .then((result) => {
                 if (result.rows.length === 0) {
