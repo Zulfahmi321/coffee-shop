@@ -41,7 +41,7 @@
 | /transaction |        `POST` `GET` `PATCH`         | Transactions      |
 
 ## POSTMAN DOCUMENTATION
-[Postman](https://documenter.getpostman.com/view/20700808/UyrEgZtc)
+[Postman](https://documenter.getpostman.com/view/20115381/UyrEfu5S)
 
 ## RELATED FRONTEND PROJECT
 [front-react-coffee-shop](https://github.com/Zulfahmi321/front-react-coffee-shop.git)
