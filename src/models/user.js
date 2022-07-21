@@ -1,4 +1,5 @@
 const db = require("../config/db");
+const bcrypt = require('bcrypt')
 
 const getUsersFromServer = () => {
     return new Promise((resolve, reject) => {
@@ -127,11 +128,25 @@ const updateUserFromServer = (id, photo, body) => {
     });
 };
 
+const updateUserPassword = async (newPassword, email) => {
+    try {
+        const hashedNewPassword = await bcrypt.hash(newPassword, 12);
+        await db.query("UPDATE users set password = $1 WHERE email = $2 RETURNING *", [hashedNewPassword, email]);
+        return {
+            message: "Your Password successfully recovered",
+        };
+    } catch (error) {
+        const { status, message } = error;
+        throw new ErrorHandler({ status: status ? status : 500, message });
+    }
+};
+
 module.exports = {
     getUsersFromServer,
     getSingleUserFromServer,
     findUser,
     deleteUserFromServer,
-    updateUserFromServer
+    updateUserFromServer,
+    updateUserPassword
 
 };

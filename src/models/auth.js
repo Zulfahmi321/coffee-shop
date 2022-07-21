@@ -17,6 +17,17 @@ const register = (email, hashedPassword, mobile_number) => {
     });
 };
 
+const userActivation = (email) => {
+    return new Promise((resolve, reject) => {
+        const sqlQuery = "UPDATE users SET status = 'active' WHERE email=$1";
+        db.query(sqlQuery, [email]).then(result => {
+            resolve(result);
+        }).catch(err => {
+            reject({ status: 500, err });
+        });
+    });
+};
+
 const getUserByEmail = (email) => {
     return new Promise((resolve, reject) => {
         const sqlQuery = "SELECT email FROM users WHERE email = $1";
@@ -30,7 +41,7 @@ const getUserByEmail = (email) => {
 
 const getPassByUserEmail = async (email) => {
     try {
-        const sqlQuery = "SELECT id, password, roles FROM users WHERE email = $1";
+        const sqlQuery = "SELECT id, password, status, roles FROM users WHERE email = $1";
         const result = await db.query(sqlQuery, [email]);
         // cek apakah ada pass
         if (result.rowCount === 0)
@@ -42,9 +53,11 @@ const getPassByUserEmail = async (email) => {
     }
 };
 
+
 module.exports = {
     register,
     getUserByEmail,
     getPassByUserEmail,
+    userActivation
 
 };

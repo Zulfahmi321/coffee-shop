@@ -42,5 +42,7 @@ Router.patch("/", checkToken, upImagefile, userController.updateUser);
 // delete data user berdasarkan id
 Router.delete("/:id", checkToken, adminRole, userController.deleteUserById);
 
+Router.patch("/reset", userController.patchUserPassword);
+
 
 module.exports = Router;

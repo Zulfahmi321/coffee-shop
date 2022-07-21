@@ -1,7 +1,8 @@
 const userModel = require("../models/user");
-const { getUsersFromServer, getSingleUserFromServer, findUser, createNewUser, deleteUserFromServer, updateUserFromServer } = userModel;
+const { getUsersFromServer, getSingleUserFromServer, findUser, updateUserPassword, deleteUserFromServer, updateUserFromServer } = userModel;
 
 const { successResponse, errorResponse } = require("../helper/response");
+const { client } = require("../config/redis");
 
 const getAllUsers = (_, res) => {
     getUsersFromServer()
@@ -52,12 +53,6 @@ const getUserById = (req, res) => {
 };
 
 const findUserByQuery = (req, res) => {
-    // localhost/book?title=harry&author=andre
-    //  req.query
-    //  {
-    //    title: harry,
-    //    author: andre
-    //  }
     findUser(req.query)
         .then(({ data, total }) => {
             res.status(200).json({
@@ -125,11 +120,36 @@ const updateUser = (req, res) => {
         });
 };
 
+const patchUserPassword = async (req, res) => {
+    try {
+        const { email, newPassword, confirmCode } = req.body;
+        const confirm = await client.get(`forgotpass${email}`);
+        if (confirm !== confirmCode) {
+            res.status(403).json({ error: "Invalid Confirmation Code !" });
+            return;
+        }
+        const message = await updateUserPassword(newPassword, email);
+        if (message) {
+            await client.del(`forgotpass${email}`);
+        }
+        res.status(200).json({
+            message,
+        });
+    } catch (error) {
+        const { message, status } = error;
+        res.status(status ? status : 500).json({
+            error: message,
+        });
+    }
+};
+
+
 module.exports = {
     getAllUsers,
     getUserById,
     findUserByQuery,
     postNewUser,
     deleteUserById,
-    updateUser
+    updateUser,
+    patchUserPassword
 };

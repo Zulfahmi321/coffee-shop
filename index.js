@@ -11,6 +11,7 @@ const mainRouter = require("./src/routes/index");
 
 //import config db
 const db = require("./src/config/db");
+const { redisConn } = require("./src/config/redis")
 
 // const logger = require("morgan");
 
@@ -23,6 +24,7 @@ const PORT = process.env.PORT || 8080;
 // CORS
 
 const cors = require("cors");
+redisConn()
 //pengkondisian koneksi db berhasil, maka jalankan local server
 db.connect()
     .then(() => {
@@ -50,7 +52,7 @@ db.connect()
             allowedHeaders: ["Content-Type", "Authorization"],
         };
         server.use(cors(corsOptions));
-          // server.options("*", cors(corsOptions));
+        // server.options("*", cors(corsOptions));
 
         server.use(cloudinaryConfig);
 

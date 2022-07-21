@@ -1,6 +1,7 @@
 const { errorResponse } = require("../helper/response");
 const { getUserByEmail } = require("../models/auth");
 const jwt = require("jsonwebtoken");
+const { client } = require("../config/redis");
 
 const checkDuplicate = (req, res, next) => {
     getUserByEmail(req.body.email)
@@ -15,6 +16,25 @@ const checkDuplicate = (req, res, next) => {
         });
 };
 
+const confirmEmail = (req, res, next) => {
+    const { token } = req.params;
+
+    if (!token) {
+        return errorResponse(res, 401, { msg: "Please Register Again" });
+    }
+    // verifikasi token
+    jwt.verify(token, process.env.JWT_SECRET, { issuer: process.env.JWT_ISSUER },
+        (err, payload) => {
+            // error handling
+            if (err && err.name === "TokenExpiredError")
+                return errorResponse(res, 401, {
+                    msg: "Link Expired, Please Register Again"
+                });
+            req.userEmail = payload;
+            next();
+        });
+};
+
 const checkToken = (req, res, next) => {
     const bearerToken = req.header("Authorization");
     // bearer token
@@ -24,12 +44,29 @@ const checkToken = (req, res, next) => {
     const token = bearerToken.split(" ")[1];
     // verifikasi token
     jwt.verify(token, process.env.JWT_SECRET, { issuer: process.env.JWT_ISSUER },
-        (err, payload) => {
+        async (err, payload) => {
             // error handling
             if (err && err.name === "TokenExpiredError")
                 return errorResponse(res, 401, {
                     msg: "You need to Sign In again"
                 });
+            try {
+                const cacheToken = await client.get(`jwt${payload.id}`)
+                if (!cacheToken) {
+                    return errorResponse(res, 401, {
+                        msg: "You need to Sign In again"
+                    });
+                }
+                if (token !== cacheToken) {
+                    return errorResponse(res, 401, {
+                        msg: "Token Unauthorized"
+                    });
+                }
+            } catch (error) {
+                return errorResponse(res, 500, {
+                    msg: error.message
+                });
+            }
             req.userPayload = payload;
             next();
         });
@@ -55,5 +92,6 @@ module.exports = {
     checkDuplicate,
     checkToken,
     adminRole,
-    userRole
+    userRole,
+    confirmEmail
 };
