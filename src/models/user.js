@@ -147,6 +147,6 @@ module.exports = {
     findUser,
     deleteUserFromServer,
     updateUserFromServer,
-    updateUserPassword
+    updateUserPassword,
 
 };

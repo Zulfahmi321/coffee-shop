@@ -23,26 +23,12 @@ Router.get("/userid", checkToken, adminRole, userController.findUserByQuery);
 // update data user
 Router.patch("/", checkToken, upImagefile, userController.updateUser);
 
-// Router.patch("/", checkToken, imageUpload.single("photo"), (req, res) => {
-//     const id = req.userPayload.id;
-//     const { file = null } = req;
-//     const photo = file.path.replace("public", "").replace(/\\/g, "/");
-//     db.query("UPDATE users SET photo = $1 WHERE id = $2 RETURNING photo", [
-//         photo,
-//         id
-//     ])
-//         .then((result) => {
-//             successResponse(res, 200, result.rows[0], null);
-//         })
-//         .catch((err) => {
-//             errorResponse(res, 500, err);
-//         });
-// });
-
 // delete data user berdasarkan id
 Router.delete("/:id", checkToken, adminRole, userController.deleteUserById);
 
 Router.patch("/reset", userController.resetUserPassword);
+
+Router.patch("/password", checkToken, userController.patchUserPassword);
 
 
 module.exports = Router;
