@@ -145,8 +145,9 @@ const resetUserPassword = async (req, res) => {
 
 const patchUserPassword = async (req, res) => {
     try {
-        const { email, newPassword } = req.body;
-        const message = await updateUserPassword(newPassword, email);
+        const id = req.userPayload.id;
+        const { newPassword } = req.body;
+        const message = await updateUserPassword(newPassword, id);
         res.status(200).json({
             message,
         });

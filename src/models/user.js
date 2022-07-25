@@ -128,10 +128,10 @@ const updateUserFromServer = (id, photo, body) => {
     });
 };
 
-const updateUserPassword = async (newPassword, email) => {
+const updateUserPassword = async (newPassword, id) => {
     try {
         const hashedNewPassword = await bcrypt.hash(newPassword, 12);
-        await db.query("UPDATE users set password = $1 WHERE email = $2 RETURNING *", [hashedNewPassword, email]);
+        await db.query("UPDATE users set password = $1 WHERE id = $2 RETURNING *", [hashedNewPassword, id]);
         return {
             message: "Your Password successfully recovered",
         };
