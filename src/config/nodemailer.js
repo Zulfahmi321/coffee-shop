@@ -17,7 +17,7 @@ const sendConfirmationEmail = async (name, email, confirmationCode) => {
             from: process.env.MAIL_USERNAME,
             to: email,
             subject: "Please confirm your Account",
-            html: `<h2>Juncoffee Email Confirmation</h2>
+            html: `<h2>Coffee Shop Email Confirmation</h2>
       <h3>Hi, ${name}</h3>
       <h3>Thank you for register. Please confirm your email by clicking on the following link:</h3>
       <a href=http://localhost:8080/auth/confirm/${confirmationCode}> Click here to verify</a>
@@ -42,9 +42,9 @@ const sendConfirmationEmail = async (name, email, confirmationCode) => {
 //                 refreshToken: process.env.OAUTH_REFRESH_TOKEN,
 //             },
 //         });
-//         let html = `<h2>Juncoffee Payment Confirmation</h2>
+//         let html = `<h2>Coffee Shop Payment Confirmation</h2>
 //     <h3>Hi, ${name}</h3>
-//     <h3>Thank you for shopping at Juncoffee. here is your transaction details:</h3>
+//     <h3>Thank you for shopping at Coffee Shop. here is your transaction details:</h3>
 //     ${items.map((val) => {
 //             return `<ul><h3>${val.name}</h3> 
 //         <img src=${val.image}/>
@@ -59,14 +59,14 @@ const sendConfirmationEmail = async (name, email, confirmationCode) => {
 //     <ul>
 //     <li><h3>BCA</h3></li>
 //     <li><h3>8720525098</h3></li>
-//     <li><h3>Juncoffee</h3></li>
+//     <li><h3>Coffee Shop</h3></li>
 //   </ul>
 //   <h2> <a href=${process.env.CLIENT_URL}/auth/payment/${token}> Click here to confirm your payment</a></h2>
 //     </div>`;
 //         if (payMethod === "cash on delivery") {
-//             html = `<h2>Juncoffee Payment Confirmation</h2>
+//             html = `<h2>Coffee Shop Payment Confirmation</h2>
 //       <h3>Hi, ${name}</h3>
-//       <h3>Thank you for shopping at Juncoffee. here is your transaction details:</h3>
+//       <h3>Thank you for shopping at Coffee Shop. here is your transaction details:</h3>
 //       ${items.map((val) => {
 //                 return `<ul><h3>${val.name}</h3> 
 //         <img src=${val.image}/>
@@ -108,7 +108,7 @@ const sendPasswordConfirmation = async (name, email, confirmCode) => {
                 refreshToken: process.env.OAUTH_REFRESH_TOKEN,
             },
         });
-        let html = `<h2>Juncoffee Forgot Password Confirmation</h2>
+        let html = `<h2>Coffee Shop Forgot Password Confirmation</h2>
       <h3>Hi, ${name}</h3>
       <h3>Here is your account details:</h3>
       <ul>
