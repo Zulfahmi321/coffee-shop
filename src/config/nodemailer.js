@@ -20,7 +20,7 @@ const sendConfirmationEmail = async (name, email, confirmationCode) => {
             html: `<h2>Coffee Shop Email Confirmation</h2>
       <h3>Hi, ${name}</h3>
       <h3>Thank you for register. Please confirm your email by clicking on the following link:</h3>
-      <a href=http://localhost:8080/auth/confirm/${confirmationCode}> Click here to verify</a>
+      <a href=https://coffee-shop-zul.herokuapp.com/auth/confirm/${confirmationCode}> Click here to verify</a>
       </div>`,
         };
         await transport.sendMail(mailOptions);
