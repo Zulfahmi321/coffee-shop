@@ -87,7 +87,7 @@ fieldsValidator.bodyPostPromo = (req, res, next) => {
 };
 
 fieldsValidator.bodyPostTransaction = (req, res, next) => {
-    const { product_id, quantity, size_id, payment_id, delivery_id} = req.body;
+    const { product_id, quantity, size_id, payment_id, delivery_id } = req.body;
 
     if (!product_id) {
         return res.status(400).json({

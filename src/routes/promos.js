@@ -10,7 +10,7 @@ Router.get("/:id", promosController.getPromosById);
 
 Router.get("/", promosController.findPromosByQuery);
 
-Router.post("/", bodyPostPromo, promosController.postNewPromos);
+Router.post("/new", bodyPostPromo, promosController.postNewPromos);
 
 Router.patch("/:id", promosController.updatePromos);
 

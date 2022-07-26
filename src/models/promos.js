@@ -80,13 +80,13 @@ const findPromos = (query) => {
 
 const createNewPromos = (body) => {
     return new Promise((resolve, reject) => {
-        const { code, discount, description, expired_start, expired_end, normal_price, name } = body;
+        const { code, discount, description, end_date, normal_price, name } = body;
         const sqlQuery = "INSERT INTO promos(id, code, discount, expired_start, expired_end, description, normal_price, name) VALUES($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *";
-        // const expired_start = new Date(Date.now());
+        const start_date = new Date(Date.now());
         // const expired_end = new Date();
         // expired_end.setDate(expired_end.getDate() + 6);
         const id = uuidV4();
-        db.query(sqlQuery, [id, code, discount, expired_start, expired_end, description, normal_price, name])
+        db.query(sqlQuery, [id, code, discount, start_date, end_date, description, normal_price, name])
             .then(({ rows }) => {
                 const response = {
                     data: rows[0],
