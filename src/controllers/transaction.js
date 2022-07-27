@@ -27,7 +27,7 @@ const postNewTransaction = async (req, res) => {
         const msg = {
             token: process.env.TOKEN_NOTIF,
             notification: {
-                body: `User Created Transaction`,
+                body: 'User Created Transaction',
                 title: 'TRANSACTION',
             },
         };
@@ -38,7 +38,8 @@ const postNewTransaction = async (req, res) => {
             err: null,
             data,
         });
-    } catch (error) {
+    }
+    catch (error) {
         // const { status, err } = error;
         res.status(500).json({
             err: error,
