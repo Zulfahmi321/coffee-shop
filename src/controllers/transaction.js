@@ -3,49 +3,49 @@ const { messaging } = require('../config/firebase');
 const notif = messaging();
 const { createNewTransaction, findTransactionUser, getTransactionFromServer, getSingleTransactionsFromServer } = transactionModel;
 
-const postNewTransaction = (req, res) => {
-    const id = req.userPayload.id;
-    createNewTransaction(req.body, id)
-        .then(({ data }) => {
-            res.status(200).json({
-                err: null,
-                data,
-            });
-        })
-        .catch(error => {
-            res.status(500).json({
-                err: error,
-                data: [],
-            });
-        });
-};
-
-// const postNewTransaction = async (req, res) => {
-//     try {
-//         // const { body } = req;
-//         const msg = {
-//             token: process.env.TOKEN_NOTIF,
-//             notification: {
-//                 body: `User Created Transaction`,
-//                 title: 'TRANSACTION',
-//             },
-//         };
-//         const id = req.userPayload.id;
-//         const result = await createNewTransaction(req.body, id);
-//         const { data } = result;
-//         await notif.send(msg);
-//         return res.status(200).json({
-//             err: null,
-//             data,
+// const postNewTransaction = (req, res) => {
+//     const id = req.userPayload.id;
+//     createNewTransaction(req.body, id)
+//         .then(({ data }) => {
+//             res.status(200).json({
+//                 err: null,
+//                 data,
+//             });
+//         })
+//         .catch(error => {
+//             res.status(500).json({
+//                 err: error,
+//                 data: [],
+//             });
 //         });
-//     } catch (error) {
-//         // const { status, err } = error;
-//         res.status(500).json({
-//             err: error,
-//             data: [],
-//         });
-//     }
 // };
+
+const postNewTransaction = async (req, res) => {
+    try {
+        // const { body } = req;
+        const id = req.userPayload.id;
+        const msg = {
+            token: process.env.TOKEN_NOTIF,
+            notification: {
+                body: `User Created Transaction`,
+                title: 'TRANSACTION',
+            },
+        };
+        const result = await createNewTransaction(req.body, id);
+        const { data } = result;
+        await notif.send(msg);
+        return res.status(200).json({
+            err: null,
+            data,
+        });
+    } catch (error) {
+        // const { status, err } = error;
+        res.status(500).json({
+            err: error,
+            data: [],
+        });
+    }
+};
 
 const getAllTransaction = (_, res) => {
     getTransactionFromServer()
