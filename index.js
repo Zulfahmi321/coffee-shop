@@ -47,7 +47,7 @@ db.connect()
 
         // pasang cors
         const corsOptions = {
-            origin: ["http://127.0.0.1:5500", "http://localhost:3000", "https://love-coffee-shop.netlify.app"],
+            origin: ["http://127.0.0.1:5500", "http://localhost:3000", "https://zul-coffee-shop.netlify.app"],
             methods: ["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
             allowedHeaders: ["Content-Type", "Authorization"],
         };
